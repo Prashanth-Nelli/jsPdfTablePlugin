@@ -1,15 +1,15 @@
-( function(jsPDFAPI) {
+(function(jsPDFAPI) {
 
-	function insertHeader(data) {
+function insertHeader(data) {
 	rObj = {}, hObj = {};
 	rObj = data[0];
 	for (var key in rObj) {
 		hObj[key] = key;
 	}
 	data.splice(0, 0, hObj);
-	};
+};
 
-	function initPDF(data, this) {
+function initPDF(data, this) {
 	dim = [50, 50, 500, 250];
 	//this.rect(2, 2, 590, 830);
 	columnCount = calColumnCount(data);
@@ -17,9 +17,9 @@
 	width = dim[2] / columnCount;
 	height = dim[2] / rowCount;
 	dim[3] = calrdim(data, dim);
-	}
+}
 
-	jsPDFAPI.generateTable = function(table_DATA) {
+jsPDFAPI.generateTable = function(table_DATA) {
 	fdata = [], sdata = [];
 	SplitIndex = [], cSplitIndex = [], indexHelper = 0;
 	heights = [];
@@ -52,9 +52,9 @@
 	}
 	// this.text(50, nextStart + 20, "Hello world");
 	// this.save("some-file.pdf");
-	};
+};
 
-	function pdf(table, rdim, this, hControl, bControl) {
+function pdf(table, rdim, this, hControl, bControl) {
 	columnCount = calColumnCount(table);
 	rowCount = table.length;
 	rdim[3] = calrdim(table, rdim);
@@ -63,9 +63,9 @@
 	drawRows(this, rowCount, rdim, hControl);
 	drawColumns(this, columnCount, rdim);
 	nextStart = insertData(this, rowCount, columnCount, rdim, table, bControl);
-	};
+};
 
-	function insertData(this, iR, jC, rdim, data, brControl) {
+function insertData(this, iR, jC, rdim, data, brControl) {
 	xOffset = 10;
 	yOffset = 10;
 	y = rdim[1] + yOffset;
@@ -107,9 +107,9 @@
 	}
 
 	return y;
-	};
+};
 
-	function calColumnCount(data) {
+function calColumnCount(data) {
 		var obj = data[0];
 		var i = 0;
 		for (var key in obj) {
@@ -117,9 +117,9 @@
 			}
 		}
 		return i;
-	};
+};
 
-	function drawColumns(this, i, rdim) {
+function drawColumns(this, i, rdim) {
 	x = rdim[0];
 	y = rdim[1];
 	w = rdim[2] / i;
@@ -128,9 +128,9 @@
 		this.rect(x, y, w, h);
 		x += w;
 	}
-	};
+};
 
-	function calrdim(data, rdim) {
+function calrdim(data, rdim) {
 	row = 0;
 	x = rdim[0];
 	y = rdim[1];
@@ -168,9 +168,9 @@
 		}
 	}
 	return value;
-	};
+};
 
-	function drawRows(this, i, rdim, hrControl) {
+function drawRows(this, i, rdim, hrControl) {
 	x = rdim[0];
 	y = rdim[1];
 	w = rdim[2];
@@ -185,7 +185,7 @@
 		}
 		y += heights[j];
 	}
-	};
+};
 
 }(jsPDF.API));
 
