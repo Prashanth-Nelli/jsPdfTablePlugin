@@ -76,7 +76,7 @@ function drawTable(table_DATA,start) {
 				dim[1]=start;
 			}
 			pdf(tabledata, dim, true, false);
-			pageStart=0;
+			pageStart=80;
 			initPDF(tabledata);
 			jg = cSplitIndex[ig];
 			if ((ig + 1) != cSplitIndex.length) {
@@ -202,7 +202,7 @@ function calrdim(data, rdim) {
 		if (indexHelper > (doc.internal.pageSize.height-pageStart-20)) {
 			SplitIndex.push(i);
 			indexHelper = 0;
-			pageStart=0;
+			pageStart=80;
 		}
 	}
 	return value;
