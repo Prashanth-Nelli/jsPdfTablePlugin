@@ -1,4 +1,39 @@
-(function(jsPDFAPI) {
+jsPdfTable = ( function(document) {
+
+var rObj = {}
+	,hObj = {}
+	,data = []
+	,dim = []
+	,columnCount
+	,rowCount
+	,width
+	,heigth
+	,fdata = []
+	,sdata = []
+	,SplitIndex = []
+	,cSplitIndex = []
+	,indexHelper = 0
+	,heights = []
+	,fontSize = 10
+	,jg
+	,i
+	,tabledata = []
+	,x
+	,y
+	,xOffset
+	,yOffset
+	,iTexts
+	,start
+	,end
+	,ih
+	,length
+	,lengths
+	,row
+	,obj
+	,value
+	,nlines
+	,self
+	,doc;
 
 function insertHeader(data) {
 	rObj = {}, hObj = {};
@@ -9,9 +44,8 @@ function insertHeader(data) {
 	data.splice(0, 0, hObj);
 };
 
-function initPDF(data, this) {
+function initPDF(data) {
 	dim = [50, 50, 500, 250];
-	//this.rect(2, 2, 590, 830);
 	columnCount = calColumnCount(data);
 	rowCount = data.length;
 	width = dim[2] / columnCount;
@@ -19,51 +53,52 @@ function initPDF(data, this) {
 	dim[3] = calrdim(data, dim);
 }
 
-jsPDFAPI.generateTable = function(table_DATA) {
+function drawTable(table_DATA) {
 	fdata = [], sdata = [];
 	SplitIndex = [], cSplitIndex = [], indexHelper = 0;
 	heights = [];
-	//var this = new jsPDF('p', 'pt', 'a4', true);
-	this.setFont("times", "normal");
+	doc.setFont("times", "normal");
+	self = doc;
 	fontSize = 10;
-	this.setFontSize(fontSize);
-	initPDF(table_DATA, this);
+	doc.setFontSize(fontSize);
+	initPDF(table_DATA);
 
-	//console.log(this.internal.pageSize.height+"inner height");
+	//console.log(doc.internal.pageSize.height+"inner height");
 	if (dim[3] > 750) {
-		var jg = 0;
+		jg = 0;
 		cSplitIndex = SplitIndex;
 		cSplitIndex.push(table_DATA.length);
 		for (var ig = 0; ig < cSplitIndex.length; ig++) {
 			tabledata = [];
 			tabledata = table_DATA.slice(jg, cSplitIndex[ig]);
 			insertHeader(tabledata);
-			initPDF(tabledata, this);
-			pdf(tabledata, dim, this, true, false);
+			initPDF(tabledata);
+			return pdf(tabledata, dim, true, false);
 			jg = cSplitIndex[ig];
 			if ((ig + 1) != cSplitIndex.length) {
-				this.addPage();
+				doc.addPage();
 			}
 		}
 	} else {
-		pdf(table_DATA, dim, this, true, false);
+		return pdf(table_DATA, dim, doc, true, false);
 	}
-	// this.text(50, nextStart + 20, "Hello world");
-	// this.save("some-file.pdf");
+	// doc.text(50, nextStart + 20, "Hello world");
+	// doc.save("some-file.pdf");
 };
 
-function pdf(table, rdim, this, hControl, bControl) {
+function pdf(table, rdim, hControl, bControl) {
 	columnCount = calColumnCount(table);
 	rowCount = table.length;
 	rdim[3] = calrdim(table, rdim);
 	width = rdim[2] / columnCount;
 	height = rdim[2] / rowCount;
-	drawRows(this, rowCount, rdim, hControl);
-	drawColumns(this, columnCount, rdim);
-	nextStart = insertData(this, rowCount, columnCount, rdim, table, bControl);
+	drawRows(rowCount, rdim, hControl);
+	drawColumns(columnCount, rdim);
+	nextStart = insertData(rowCount, columnCount, rdim, table, bControl);
+	return nextStart;
 };
 
-function insertData(this, iR, jC, rdim, data, brControl) {
+function insertData(iR, jC, rdim, data, brControl) {
 	xOffset = 10;
 	yOffset = 10;
 	y = rdim[1] + yOffset;
@@ -84,23 +119,25 @@ function insertData(this, iR, jC, rdim, data, brControl) {
 					start = 0;
 					end = 0;
 					ih = 0;
-					ech = ((brControl) && (i === 0)) ? this.setFont("times", "bold") : '';
-					//ech is a dummy variable
+					if((brControl) && (i === 0)){
+						doc.setFont("times", "bold");
+					}
 					for ( j = 0; j < iTexts; j++) {
 						end += Math.ceil((width / (Math.ceil((fontSize) - fontSize * 0.4))));
-						this.text(x, y + ih, cell.substring(start, end));
+						doc.text(x, y + ih, cell.substring(start, end));
 						start = end;
 						ih += fontSize;
 					}
 				} else {
-					ech = ((brControl) && (i === 0)) ? this.setFont("times", "bold") : '';
-					//ech is a dummy variable
-					this.text(x, y, cell);
+					if((brControl) && (i === 0)){
+						doc.setFont("times", "bold");
+					}
+					doc.text(x, y, cell);
 				}
 				x += rdim[2] / jC;
 			}
 		}
-		this.setFont("times", "normal");
+		doc.setFont("times", "normal");
 		y += heights[i];
 	}
 
@@ -117,13 +154,13 @@ function calColumnCount(data) {
 	return i;
 };
 
-function drawColumns(this, i, rdim) {
+function drawColumns(i, rdim) {
 	x = rdim[0];
 	y = rdim[1];
 	w = rdim[2] / i;
 	h = rdim[3];
 	for (var j = 0; j < i; j++) {
-		this.rect(x, y, w, h);
+		doc.rect(x, y, w, h);
 		x += w;
 	}
 };
@@ -154,7 +191,7 @@ function calrdim(data, rdim) {
 			heights[i] = (fontSize + (fontSize / 2));
 		}
 	}
-	var value = 0;
+	value = 0;
 	indexHelper = 0;
 	SplitIndex = [];
 	for ( i = 0; i < heights.length; i++) {
@@ -168,22 +205,29 @@ function calrdim(data, rdim) {
 	return value;
 };
 
-function drawRows(this, i, rdim, hrControl) {
+function drawRows(i, rdim, hrControl) {
 	x = rdim[0];
 	y = rdim[1];
 	w = rdim[2];
 	h = rdim[3] / i;
 	for (var j = 0; j < i; j++) {
 		if (j === 0 && hrControl) {
-			this.setFillColor(182, 192, 192);
-			this.rect(x, y, w, heights[j], 'F');
+			doc.setFillColor(182, 192, 192);
+			doc.rect(x, y, w, heights[j], 'F');
 		} else {
-			this.setDrawColor(0, 0, 0);
-			this.rect(x, y, w, heights[j]);
+			doc.setDrawColor(0, 0, 0);
+			doc.rect(x, y, w, heights[j]);
 		}
 		y += heights[j];
 	}
 };
 
-}(jsPDF.API));
+return function(document) {
+	doc = document;
+	return {
+		drawTable : drawTable
+	}
+}
+
+}(document));
 
