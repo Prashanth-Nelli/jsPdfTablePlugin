@@ -32,7 +32,6 @@ var rObj = {}
 	,obj
 	,value
 	,nlines
-	,self
 	,doc;
 
 function insertHeader(data) {
