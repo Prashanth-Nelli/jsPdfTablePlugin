@@ -32,7 +32,9 @@ var rObj = {}
 	,obj
 	,value
 	,nlines
-	,doc;
+	,doc
+	,nextStart
+	,pageStart=0;
 
 function insertHeader(data) {
 	rObj = {}, hObj = {};
@@ -52,18 +54,17 @@ function initPDF(data) {
 	dim[3] = calrdim(data, dim);
 }
 
-function drawTable(table_DATA) {
+function drawTable(table_DATA,start) {
 	fdata = [], sdata = [];
 	SplitIndex = [], cSplitIndex = [], indexHelper = 0;
 	heights = [];
 	doc.setFont("times", "normal");
-	self = doc;
 	fontSize = 10;
 	doc.setFontSize(fontSize);
+	pageStart=start;
 	initPDF(table_DATA);
-
-	//console.log(doc.internal.pageSize.height+"inner height");
-	if (dim[3] > 750) {
+	dim[1]=start;	
+	if ((dim[3]+start)> (doc.internal.pageSize.height)) {
 		jg = 0;
 		cSplitIndex = SplitIndex;
 		cSplitIndex.push(table_DATA.length);
@@ -71,18 +72,21 @@ function drawTable(table_DATA) {
 			tabledata = [];
 			tabledata = table_DATA.slice(jg, cSplitIndex[ig]);
 			insertHeader(tabledata);
+			if(ig===0){
+				dim[1]=start;
+			}
+			pdf(tabledata, dim, true, false);
+			pageStart=0;
 			initPDF(tabledata);
-			return pdf(tabledata, dim, true, false);
 			jg = cSplitIndex[ig];
 			if ((ig + 1) != cSplitIndex.length) {
 				doc.addPage();
 			}
 		}
 	} else {
-		return pdf(table_DATA, dim, doc, true, false);
+		pdf(table_DATA, dim, doc, true, false);
 	}
-	// doc.text(50, nextStart + 20, "Hello world");
-	// doc.save("some-file.pdf");
+	return nextStart;
 };
 
 function pdf(table, rdim, hControl, bControl) {
@@ -139,7 +143,6 @@ function insertData(iR, jC, rdim, data, brControl) {
 		doc.setFont("times", "normal");
 		y += heights[i];
 	}
-
 	return y;
 };
 
@@ -193,12 +196,13 @@ function calrdim(data, rdim) {
 	value = 0;
 	indexHelper = 0;
 	SplitIndex = [];
-	for ( i = 0; i < heights.length; i++) {
+	for (var i = 0; i < heights.length; i++) {
 		value += heights[i];
 		indexHelper += heights[i];
-		if (indexHelper > 700) {
+		if (indexHelper > (doc.internal.pageSize.height-pageStart-20)) {
 			SplitIndex.push(i);
 			indexHelper = 0;
+			pageStart=0;
 		}
 	}
 	return value;
