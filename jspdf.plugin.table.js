@@ -35,7 +35,6 @@ jsPDFAPI.generateTable = function(table_DATA) {
 		cSplitIndex = SplitIndex;
 		cSplitIndex.push(table_DATA.length);
 		for (var ig = 0; ig < cSplitIndex.length; ig++) {
-
 			tabledata = [];
 			tabledata = table_DATA.slice(jg, cSplitIndex[ig]);
 			insertHeader(tabledata);
@@ -45,7 +44,6 @@ jsPDFAPI.generateTable = function(table_DATA) {
 			if ((ig + 1) != cSplitIndex.length) {
 				this.addPage();
 			}
-
 		}
 	} else {
 		pdf(table_DATA, dim, this, true, false);
@@ -110,13 +108,13 @@ function insertData(this, iR, jC, rdim, data, brControl) {
 };
 
 function calColumnCount(data) {
-		var obj = data[0];
-		var i = 0;
-		for (var key in obj) {
-			if (key.charAt(0) !== '$') {++i;
-			}
+	var obj = data[0];
+	var i = 0;
+	for (var key in obj) {
+		if (key.charAt(0) !== '$') {++i;
 		}
-		return i;
+	}
+	return i;
 };
 
 function drawColumns(this, i, rdim) {
