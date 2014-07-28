@@ -1,0 +1,39 @@
+<html>
+	<head>
+		<script src="jspdf.js"></script>
+		<script src="libs/Deflate/adler32cs.js"></script>
+		<script src="libs/FileSaver.js/FileSaver.js"></script>
+		<script src="libs/Blob.js/BlobBuilder.js"></script>
+		<script src="jspdf.plugin.table.js"></script>
+		<script>
+			function generate() {
+				var data = [], nextStart = 0, fontSize = 10, height = 0;
+				for (var insert = 0; insert <= 80; insert++) {
+					data.push({
+						"name" : "jspdf plugin",
+						"version" : '1.0.0',
+						"author" : "Prashanth Nelli",
+						"Designation" : "AngularJs Developer"
+					});
+				}
+				var doc = new jsPDF('p', 'pt', 'a4', true);
+				doc.setFont("times", "normal");
+				doc.setFontSize(fontSize);
+				doc.text(50,100,"hi table")
+				
+				/**
+				height = jsPdfTable(doc).drawTable(objectArray,yPosition);
+				**/
+				
+				height = jsPdfTable(doc).drawTable(data, 300);
+				doc.text(50, height + 20, 'hi world');
+				doc.save("some-file.pdf");
+			};
+		</script>
+	</head>
+	<body>
+		<button onclick="generate()">
+			Generate
+		</button>
+	</body>
+</html>
