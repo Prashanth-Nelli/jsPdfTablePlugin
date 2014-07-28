@@ -1,8 +1,18 @@
 jsPdfTablePlugin
 ================
 
-How to use jsPdfTablePlugin
-==========================
+
+ jsPdfTablePlugin expects an array of objects as an input,
+ 
+ Each key in the object represents a column, 
+ 
+ And the no of rows will be equal to input data length
+ 
+ 
+ jsPdfTablePlugin return's the current y position of Document, 
+ 
+ for further edition of Document
+
 
 
 Example code :-
@@ -37,20 +47,10 @@ doc.save("some-file.pdf");
 	
 <pre>
 
-<p>
+
   
- jsPdfTablePlugin expects an array of objects as an input,
- 
- Each key in the object represents a column, 
- 
- And the no of rows will be equal to input data length
- 
- 
- jsPdfTablePlugin return's the current y position of Document, 
- 
- for further edition of Document
+
   
-</p>
 
 
  
