@@ -8,22 +8,31 @@ How to use jsPdfTablePlugin
 Example code :-
 
 <pre>
+var data = []
+    ,nextStart = 0
+    ,fontSize = 10
+    ,height = 0
+    ,doc;
 for (var insert = 0; insert <= 80; insert++) {
-					data.push({
-						"name" : "pdf plugin is best",
-						"valueq" : insert,
-						"valuew" : insert,
-						"valuer" : 1,
-						"taste" : "source"
-					});
-};
+	data.push({
+		"name" : "jspdf plugin",
+		"version" : '1.0.0',
+		"author" : "Prashanth Nelli",
+		"Designation" : "AngularJs Developer"
+	});
+}
 
-var doc = new jsPDF('p', 'pt', 'a4', true);
+doc = new jsPDF('p', 'pt', 'a4', true);
 doc.setFont("times", "normal");
-fontSize = 10;
 doc.setFontSize(fontSize);
-var h = jsPdfTable(doc).drawTable($scope.data,300);
-doc.text(50,h+20,'hi world');
+doc.text(50,100,"hi table")
+
+/**
+height = jsPdfTable(doc).drawTable(objectArray,yPosition);
+**/
+
+height = jsPdfTable(doc).drawTable(data, 300);
+doc.text(50, height + 20, 'hi world');
 doc.save("some-file.pdf");
 	
 <pre>
