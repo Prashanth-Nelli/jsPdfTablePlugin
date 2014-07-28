@@ -21,7 +21,6 @@ Example code :-
 
 <pre>
 var data = []
-    ,nextStart = 0
     ,fontSize = 10
     ,height = 0
     ,doc;
