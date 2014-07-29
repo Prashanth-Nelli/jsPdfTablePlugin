@@ -1,195 +1,270 @@
+/** ====================================================================
+* jsPDF table plugin
+* Copyright (c) 2014 Nelli.Prashanth,https://github.com/Prashanth-Nelli
+* Permission is hereby granted, free of charge, to any person obtaining
+* a copy of this software and associated documentation files (the
+* "Software"), to deal in the Software without restriction, including
+* without limitation the rights to use, copy, modify, merge, publish,
+* distribute, sublicense, and/or sell copies of the Software, and to
+* permit persons to whom the Software is furnished to do so, subject to
+* the following conditions:
+*
+* The above copyright notice and this permission notice shall be
+* included in all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+* LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+* OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+* WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+* ====================================================================
+*/
+
 (function(jsPDFAPI) {
 
-		var rObj = {}, hObj = {}, data = [], dim = [], columnCount, rowCount, width, heigth, fdata = [], sdata = [], SplitIndex = [], cSplitIndex = [], indexHelper = 0, heights = [], fontSize = 10, jg, i, tabledata = [], x, y, xOffset, yOffset, iTexts, start, end, ih, length, lengths, row, obj, value, nlines, nextStart, pageStart = 0;
+var 	rObj = {}
+	,hObj = {}
+	,data = []
+	,dim = []
+	,columnCount
+	,rowCount
+	,width
+	,heigth
+	,fdata = []
+	,sdata = []
+	,SplitIndex = []
+	,cSplitIndex = []
+	,indexHelper = 0
+	,heights = []
+	,fontSize = 10
+	,jg
+	,i
+	,tabledata = []
+	,x
+	,y
+	,xOffset
+	,yOffset
+	,iTexts
+	,start
+	,end
+	,ih
+	,length
+	,lengths
+	,row
+	,obj
+	,value
+	,nlines
+	,nextStart
+	,pageStart = 0;
 
-		jsPDFAPI.insertHeader = function(data) {
-			rObj = {}, hObj = {};
-			rObj = data[0];
-			for (var key in rObj) {
-				hObj[key] = key;
+// Inserts Table Head row
+
+jsPDFAPI.insertHeader = function(data) {
+	rObj = {}, hObj = {};
+	rObj = data[0];
+	for (var key in rObj) {
+		hObj[key] = key;
+	}
+	data.splice(0, 0, hObj);
+};
+
+// intialize the dimension array, column count and row count
+
+jsPDFAPI.initPDF = function(data) {
+	dim = [50, 50, 500, 250];
+	columnCount = this.calColumnCount(data);
+	rowCount = data.length;
+	width = dim[2] / columnCount;
+	height = dim[2] / rowCount;
+	dim[3] = this.calrdim(data, dim);
+};
+
+//draws table on the document 
+
+jsPDFAPI.drawTable = function(table_DATA, start) {
+	fdata = [], sdata = [];
+	SplitIndex = [], cSplitIndex = [], indexHelper = 0;
+	heights = [];
+	this.setFont("times", "normal");
+	fontSize = 10;
+	this.setFontSize(fontSize);
+	pageStart = start;
+	this.initPDF(table_DATA);
+	dim[1] = start;
+	if ((dim[3] + start) > (this.internal.pageSize.height)) {
+		jg = 0;
+		cSplitIndex = SplitIndex;
+		cSplitIndex.push(table_DATA.length);
+		for (var ig = 0; ig < cSplitIndex.length; ig++) {
+			tabledata = [];
+			tabledata = table_DATA.slice(jg, cSplitIndex[ig]);
+			this.insertHeader(tabledata);
+			if (ig === 0) {
+				dim[1] = start;
 			}
-			data.splice(0, 0, hObj);
-		};
-
-		jsPDFAPI.initPDF = function(data) {
-			dim = [50, 50, 500, 250];
-			columnCount = this.calColumnCount(data);
-			rowCount = data.length;
-			width = dim[2] / columnCount;
-			height = dim[2] / rowCount;
-			dim[3] = this.calrdim(data, dim);
+			this.pdf(tabledata, dim, true, false);
+			pageStart = 80;
+			this.initPDF(tabledata);
+			jg = cSplitIndex[ig];
+			if ((ig + 1) != cSplitIndex.length) {
+				this.addPage();
+			}
 		}
+	} else {
+		this.pdf(table_DATA, dim, true, false);
+	}
+	return nextStart;
+};
 
-		jsPDFAPI.drawTable = function(table_DATA, start) {
-			fdata = [], sdata = [];
-			SplitIndex = [], cSplitIndex = [], indexHelper = 0;
-			heights = [];
-			this.setFont("times", "normal");
-			fontSize = 10;
-			this.setFontSize(fontSize);
-			pageStart = start;
-			this.initPDF(table_DATA);
-			dim[1] = start;
-			if ((dim[3] + start) > (this.internal.pageSize.height)) {
-				jg = 0;
-				cSplitIndex = SplitIndex;
-				cSplitIndex.push(table_DATA.length);
-				for (var ig = 0; ig < cSplitIndex.length; ig++) {
-					tabledata = [];
-					tabledata = table_DATA.slice(jg, cSplitIndex[ig]);
-					this.insertHeader(tabledata);
-					if (ig === 0) {
-						dim[1] = start;
-					}
-					this.pdf(tabledata, dim, true, false);
-					pageStart = 80;
-					this.initPDF(tabledata);
-					jg = cSplitIndex[ig];
-					if ((ig + 1) != cSplitIndex.length) {
-						this.addPage();
-					}
-				}
-			} else {
-				this.pdf(table_DATA, dim, true, false);
-			}
-			return nextStart;
-		};
+//calls methods in a sequence manner required to draw table
 
-		jsPDFAPI.pdf = function(table, rdim, hControl, bControl) {
-			columnCount = this.calColumnCount(table);
-			rowCount = table.length;
-			rdim[3] = this.calrdim(table, rdim);
-			width = rdim[2] / columnCount;
-			height = rdim[2] / rowCount;
-			this.drawRows(rowCount, rdim, hControl);
-			this.drawColumns(columnCount, rdim);
-			nextStart = this.insertData(rowCount, columnCount, rdim, table, bControl);
-			return nextStart;
-		};
+jsPDFAPI.pdf = function(table, rdim, hControl, bControl) {
+	columnCount = this.calColumnCount(table);
+	rowCount = table.length;
+	rdim[3] = this.calrdim(table, rdim);
+	width = rdim[2] / columnCount;
+	height = rdim[2] / rowCount;
+	this.drawRows(rowCount, rdim, hControl);
+	this.drawColumns(columnCount, rdim);
+	nextStart = this.insertData(rowCount, columnCount, rdim, table, bControl);
+	return nextStart;
+};
 
-		jsPDFAPI.insertData = function(iR, jC, rdim, data, brControl) {
-			xOffset = 10;
-			yOffset = 10;
-			y = rdim[1] + yOffset;
-			for ( i = 0; i < iR; i++) {
-				obj = data[i];
-				x = rdim[0] + xOffset;
-				for (var key in obj) {
-					if (key.charAt(0) !== '$') {
-						if (obj[key] !== null) {
-							cell = obj[key].toString();
-						} else {
-							cell = '-';
-						}
-						cell = cell + '';
-						if (((cell.length * fontSize) + xOffset) > (width)) {
-							iTexts = (cell.length * (fontSize)) / (width * 2);
-							iTexts = Math.ceil(iTexts);
-							start = 0;
-							end = 0;
-							ih = 0;
-							if ((brControl) && (i === 0)) {
-								this.setFont("times", "bold");
-							}
-							for ( j = 0; j < iTexts; j++) {
-								end += Math.ceil((width / (Math.ceil((fontSize) - fontSize * 0.4))));
-								this.text(x, y + ih, cell.substring(start, end));
-								start = end;
-								ih += fontSize;
-							}
-						} else {
-							if ((brControl) && (i === 0)) {
-								this.setFont("times", "bold");
-							}
-							this.text(x, y, cell);
-						}
-						x += rdim[2] / jC;
-					}
-				}
-				this.setFont("times", "normal");
-				y += heights[i];
-			}
-			return y;
-		};
+//inserts text into the table 
 
-		jsPDFAPI.calColumnCount = function(data) {
-			var obj = data[0];
-			var i = 0;
-			for (var key in obj) {
-				if (key.charAt(0) !== '$') {++i;
-				}
-			}
-			return i;
-		};
-
-		jsPDFAPI.drawColumns = function(i, rdim) {
-			x = rdim[0];
-			y = rdim[1];
-			w = rdim[2] / i;
-			h = rdim[3];
-			for (var j = 0; j < i; j++) {
-				this.rect(x, y, w, h);
-				x += w;
-			}
-		};
-
-		jsPDFAPI.calrdim = function(data, rdim) {
-			row = 0;
-			x = rdim[0];
-			y = rdim[1];
-			lengths = [];
-			for (var i = 0; i < data.length > 0; i++) {
-				obj = data[i];
-				length = 0;
-				for (var key in obj) {
-					if (obj[key] !== null) {
-						if (length < obj[key].length) {
-							lengths[row] = obj[key].length;
-							length = lengths[row];
-						}
-					}
-				}++row;
-			}
-			heights = [];
-			for (var i = 0; i < lengths.length; i++) {
-				if ((lengths[i] * (fontSize)) > height) {
-					nlines = Math.ceil((lengths[i] * (fontSize)) / width);
-					heights[i] = (nlines) * (fontSize / 2) + fontSize;
+jsPDFAPI.insertData = function(iR, jC, rdim, data, brControl) {
+	xOffset = 10;
+	yOffset = 10;
+	y = rdim[1] + yOffset;
+	for ( i = 0; i < iR; i++) {
+		obj = data[i];
+		x = rdim[0] + xOffset;
+		for (var key in obj) {
+			if (key.charAt(0) !== '$') {
+				if (obj[key] !== null) {
+					cell = obj[key].toString();
 				} else {
-					heights[i] = (fontSize + (fontSize / 2));
+					cell = '-';
+				}
+				cell = cell + '';
+				if (((cell.length * fontSize) + xOffset) > (width)) {
+					iTexts = (cell.length * (fontSize)) / (width * 2);
+					iTexts = Math.ceil(iTexts);
+					start = 0;
+					end = 0;
+					ih = 0;
+					if ((brControl) && (i === 0)) {
+						this.setFont("times", "bold");
+					}
+					for ( j = 0; j < iTexts; j++) {
+						end += Math.ceil((width / (Math.ceil((fontSize) - fontSize * 0.4))));
+						this.text(x, y + ih, cell.substring(start, end));
+						start = end;
+						ih += fontSize;
+					}
+				} else {
+					if ((brControl) && (i === 0)) {
+						this.setFont("times", "bold");
+					}
+					this.text(x, y, cell);
+				}
+				x += rdim[2] / jC;
+			}
+		}
+		this.setFont("times", "normal");
+		y += heights[i];
+	}
+	return y;
+};
+
+//calculates no.of based on the data array
+
+jsPDFAPI.calColumnCount = function(data) {
+	var obj = data[0];
+	var i = 0;
+	for (var key in obj) {
+		if (key.charAt(0) !== '$') {++i;
+		}
+	}
+	return i;
+};
+
+//draws columns based on the caluclated dimensions
+
+jsPDFAPI.drawColumns = function(i, rdim) {
+	x = rdim[0];
+	y = rdim[1];
+	w = rdim[2] / i;
+	h = rdim[3];
+	for (var j = 0; j < i; j++) {
+		this.rect(x, y, w, h);
+		x += w;
+	}
+};
+
+//calculates dimensions based on the data array and returns y position for further editing of document 
+
+jsPDFAPI.calrdim = function(data, rdim) {
+	row = 0;
+	x = rdim[0];
+	y = rdim[1];
+	lengths = [];
+	for (var i = 0; i < data.length > 0; i++) {
+		obj = data[i];
+		length = 0;
+		for (var key in obj) {
+			if (obj[key] !== null) {
+				if (length < obj[key].length) {
+					lengths[row] = obj[key].length;
+					length = lengths[row];
 				}
 			}
-			value = 0;
+		}++row;
+	}
+	heights = [];
+	for (var i = 0; i < lengths.length; i++) {
+		if ((lengths[i] * (fontSize)) > height) {
+			nlines = Math.ceil((lengths[i] * (fontSize)) / width);
+			heights[i] = (nlines) * (fontSize / 2) + fontSize;
+		} else {
+			heights[i] = (fontSize + (fontSize / 2));
+		}
+	}
+	value = 0;
+	indexHelper = 0;
+	SplitIndex = [];
+	for (var i = 0; i < heights.length; i++) {
+		value += heights[i];
+		indexHelper += heights[i];
+		if (indexHelper > (this.internal.pageSize.height - pageStart - 20)) {
+			SplitIndex.push(i);
 			indexHelper = 0;
-			SplitIndex = [];
-			for (var i = 0; i < heights.length; i++) {
-				value += heights[i];
-				indexHelper += heights[i];
-				if (indexHelper > (this.internal.pageSize.height - pageStart - 20)) {
-					SplitIndex.push(i);
-					indexHelper = 0;
-					pageStart = 80;
-				}
-			}
-			return value;
-		};
+			pageStart = 80;
+		}
+	}
+	return value;
+};
 
-		jsPDFAPI.drawRows = function(i, rdim, hrControl) {
-			x = rdim[0];
-			y = rdim[1];
-			w = rdim[2];
-			h = rdim[3] / i;
-			for (var j = 0; j < i; j++) {
-				if (j === 0 && hrControl) {
-					this.setFillColor(182, 192, 192);
-					this.rect(x, y, w, heights[j], 'F');
-				} else {
-					this.setDrawColor(0, 0, 0);
-					this.rect(x, y, w, heights[j]);
-				}
-				y += heights[j];
-			}
-		};
+//draw rows based on the length of data array
+
+jsPDFAPI.drawRows = function(i, rdim, hrControl) {
+	x = rdim[0];
+	y = rdim[1];
+	w = rdim[2];
+	h = rdim[3] / i;
+	for (var j = 0; j < i; j++) {
+		if (j === 0 && hrControl) {
+			this.setFillColor(182, 192, 192);
+			this.rect(x, y, w, heights[j], 'F');
+		} else {
+			this.setDrawColor(0, 0, 0);
+			this.rect(x, y, w, heights[j]);
+		}
+		y += heights[j];
+	}
+};
 
 }(jsPDF.API));
 
