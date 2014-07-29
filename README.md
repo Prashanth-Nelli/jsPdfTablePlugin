@@ -39,7 +39,7 @@ doc.setFontSize(fontSize);
 doc.text(50,100,"hi table")
 
 /**
-height = jsPdfTable(doc).drawTable(objectArray,yPosition);
+height = doc.drawTable(objectArray,yPosition);
 **/
 
 height = jsPdfTable(doc).drawTable(data, 300);
