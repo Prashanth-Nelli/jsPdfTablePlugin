@@ -42,7 +42,7 @@ doc.text(50,100,"hi table")
 height = doc.drawTable(objectArray,yPosition);
 **/
 
-height = jsPdfTable(doc).drawTable(data, 300);
+height = doc.drawTable(data, 300);
 doc.text(50, height + 20, 'hi world');
 doc.save("some-file.pdf");
 	
