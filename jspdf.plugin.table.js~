@@ -84,7 +84,7 @@ function drawTable(table_DATA,start) {
 			}
 		}
 	} else {
-		pdf(table_DATA, dim,true, false);
+		pdf(table_DATA, dim, doc, true, false);
 	}
 	return nextStart;
 };
