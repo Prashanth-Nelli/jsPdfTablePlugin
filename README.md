@@ -47,7 +47,7 @@ for (var insert = 0; insert <= 20; insert++) {
 		"Designation" : "AngularJs Developer king is king so king also king"
 	});
 }
-height = doc.drawTable(data, {xstart:10,ystart:10,tablestart:450,marginleft:50});
+height = doc.drawTable(data, {xstart:10,ystart:10,tablestart:20,marginleft:50});
 doc.text(50, height + 20, 'hi world');
 doc.save("some-file.pdf");
 };
