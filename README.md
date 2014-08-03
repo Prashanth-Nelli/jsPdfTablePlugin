@@ -2,10 +2,16 @@ jsPdfTablePlugin
 ================
 
 
-jsPdfTablePlugin expects an array of objects and an object specifyingrequired table positioning values as an input,Each key in the object represents a column,and the no of rows will be equal to input data length,jsPdfTablePlugin return's the current y position of Document,for further edition of Document.
+jsPdfTablePlugin expects an array of objects and an object specifyingrequired table positioning values as an input,
+
+Each key in the object represents a column,and the no of rows will be equal to input data length,
+
+jsPdfTablePlugin return's the current y position of Document,for further edition of Document.
 
 
-height = doc.drawTable(objectArray,object); both parameters are mandatory object properties xstart ,ystart,tablestart,marginleft.
+height = doc.drawTable(objectArray,object); both parameters are mandatory 
+
+object properties xstart ,ystart,tablestart,marginleft.
 
 xstart      -  horizontal starting position for table 
 
