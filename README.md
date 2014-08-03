@@ -2,7 +2,9 @@ jsPdfTablePlugin
 ================
 
 
- jsPdfTablePlugin expects an array of objects as an input,
+ jsPdfTablePlugin expects an array of objects and an object specifying
+ 
+ required table positioning values as an input,
  
  Each key in the object represents a column, 
  
@@ -20,32 +22,65 @@ Example code :-
 ===================================================================
 
 <pre>
-var data = []
-    ,fontSize = 10
-    ,height = 0
-    ,doc;
-for (var insert = 0; insert <= 80; insert++) {
+var data = [],fontSize = 12, height = 0,doc;
+doc = new jsPDF('p', 'pt', 'a4', true);
+doc.setFont("courier", "normal");
+doc.setFontSize(fontSize);
+doc.text(50,100,"hi table");
+function generate() {
+for (var insert = 0; insert <= 20; insert++) {
 	data.push({
 		"name" : "jspdf plugin",
-		"version" : '1.0.0',
+		"version" : insert,
 		"author" : "Prashanth Nelli",
-		"Designation" : "AngularJs Developer"
+		"Designation" : "AngularJs Developer king is king so king also king"
 	});
 }
 
-doc = new jsPDF('p', 'pt', 'a4', true);
-doc.setFont("times", "normal");
-doc.setFontSize(fontSize);
-doc.text(50,100,"hi table")
-
 /**
-height = doc.drawTable(objectArray,yPosition);
-**/
-
-height = doc.drawTable(data, 300);
+ * height = doc.drawTable(objectArray,object); both parameters are mandatory
+ * 
+ * object properties xstart ,ystart,tablestart,marginleft.
+ * 
+ * xstart      -  horizontal starting position for table 
+ * 
+ * tablestart  -  vertical starting position for table in the starting page
+ * 
+ * ystart      -  vertical starting position for table in next pages if the records exceed present page
+ * 
+ * marginleft  -  this plugin uses full page width if u you wish to decrese the width of table increase marginleft value
+ * 
+ * doc.drawTable returns current co-ordinates values u can use those values 
+ * 
+ * for further editing .
+ * 
+ * 
+ *     xstart
+ * ----|--------------------
+ * |    
+ * |__ tablestart
+ * |
+ * |
+ * |page 1
+ * 
+ * ----|--------------------
+ * |   xstart 
+ * |__ ystart
+ * |
+ * |
+ * |page 2 3 4 5 ......
+ * 
+ * 
+ * u style the table header fill color by changing values in drawRows Method 
+ * 
+ * table plugin uses the fontSize and fontStyle set by the user 
+ * 
+ */
+				
+height = doc.drawTable(data, {xstart:10,ystart:10,tablestart:450,marginleft:50});
 doc.text(50, height + 20, 'hi world');
 doc.save("some-file.pdf");
-	
+};
 <pre>
 
   
