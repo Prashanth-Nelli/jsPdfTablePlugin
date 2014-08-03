@@ -5,9 +5,7 @@ jsPdfTablePlugin
 jsPdfTablePlugin expects an array of objects and an object specifyingrequired table positioning values as an input,Each key in the object represents a column,and the no of rows will be equal to input data length,jsPdfTablePlugin return's the current y position of Document,for further edition of Document.
 
 
-height = doc.drawTable(objectArray,object); both parameters are mandatory
-
-object properties xstart ,ystart,tablestart,marginleft.
+height = doc.drawTable(objectArray,object); both parameters are mandatory object properties xstart ,ystart,tablestart,marginleft.
 
 xstart      -  horizontal starting position for table 
 
@@ -17,26 +15,7 @@ ystart      -  vertical starting position for table in next pages if the records
 
 marginleft  -  this plugin uses full page width if u you wish to decrese the width of table increase marginleft value
 
-doc.drawTable returns current co-ordinates values u can use those values 
-
-for further editing .
-
-
-xstart
-----|--------------------
-|    
-|__ tablestart
-|
-|
-|page 1
-
-----|--------------------
-|   xstart 
-|__ ystart
-|
-|
-|page 2 3 4 5 ......
-
+doc.drawTable returns current co-ordinates values u can use those values for further editing .
 
 u style the table header fill color by changing values in drawRows Method 
 
