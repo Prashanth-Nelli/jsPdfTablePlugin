@@ -1,76 +1,74 @@
 <html>
-	<head>
-		<script src="jspdf.js"></script>
-		<script src="libs/Deflate/adler32cs.js"></script>
-		<script src="libs/FileSaver.js/FileSaver.js"></script>
-		<script src="libs/Blob.js/BlobBuilder.js"></script>
-		<script src="jspdf.plugin.table.js"></script>
-		<script>
-		
-		
-			var data = [],fontSize = 12, height = 0,doc;
-		    doc = new jsPDF('p', 'pt', 'a4', true);
-				doc.setFont("times", "normal");
-				doc.setFontSize(fontSize);
-				doc.text(50,100,"hi table");
-				for (var insert = 0; insert <= 30; insert++) {
-					data.push({
-						"name" : "jspdf plugin",
-						"version" : insert,
-						"author" : "Prashanth Nelli",
-						"Designation" : "jspdf table plugin"
-					});
-				}
-			function generate() {
-				/**
-				 * height = doc.drawTable(objectArray,object); both parameters are mandatory
-				 * 
-				 * object properties xstart ,ystart,tablestart,marginleft.
-				 * 
-				 * xstart      -  horizontal starting position for table 
-				 * 
-				 * tablestart  -  vertical starting position for table in the starting page
-				 * 
-				 * ystart      -  vertical starting position for table in next pages if the records exceed present page
-				 * 
-				 * marginleft  -  this plugin uses full page width if u you wish to decrese the width of table increase marginleft value
-				 * 
-				 * doc.drawTable returns current co-ordinates values u can use those values 
-				 * 
-				 * for further editing .
-				 * 
-				 * 
-				 * 
-				 * ----|--------------------
-				 * |   xstart 
-				 * |__ tablestart
-				 * |
-				 * |
-				 * |page 1
-				 * 
-				 * ----|--------------------
-				 * |   xstart 
-				 * |__ ystart
-				 * |
-				 * |
-				 * |page 2 ......
-				 * 
-				 * 
-				 * u style the table header fill color by changing values in drawRows Method 
-				 * 
-				 * table plugin uses the fontSize and fontStyle set by the user 
-				 * 
-				 */
-								
-				height = doc.drawTable(data, {xstart:10,ystart:10,tablestart:450,marginleft:50});
-				doc.text(50, height + 20, 'hi world');
-				doc.save("some-file.pdf");
-			};
-		</script>
-	</head>
-	<body>
-		<button onclick="generate()">
-			Generate
-		</button>
-	</body>
+<head>
+<script src="jspdf.js"></script>
+<script src="libs/Deflate/adler32cs.js"></script>
+<script src="libs/FileSaver.js/FileSaver.js"></script>
+<script src="libs/Blob.js/BlobBuilder.js"></script>
+<script src="jspdf.plugin.table.js"></script>
+<script>
+	var data = [],fontSize = 12, height = 0,doc;
+    	doc = new jsPDF('p', 'pt', 'a4', true);
+	doc.setFont("times", "normal");
+	doc.setFontSize(fontSize);
+	doc.text(50,100,"hi table");
+	for (var insert = 0; insert <= 30; insert++) {
+		data.push({
+			"name" : "jspdf plugin",
+			"version" : insert,
+			"author" : "Prashanth Nelli",
+			"Designation" : "jspdf table plugin"
+		});
+	}
+	function generate() {
+	/**
+	 * height = doc.drawTable(objectArray,object); both parameters are mandatory
+	 * 
+	 * object properties xstart ,ystart,tablestart,marginleft.
+	 * 
+	 * xstart      -  horizontal starting position for table 
+	 * 
+	 * tablestart  -  vertical starting position for table in the starting page
+	 * 
+	 * ystart      -  vertical starting position for table in next pages if the records exceed present page
+	 * 
+	 * marginleft  -  this plugin uses full page width if u you wish to decrese the width of table increase marginleft value
+	 * 
+	 * doc.drawTable returns current co-ordinates values u can use those values 
+	 * 
+	 * for further editing .
+	 * 
+	 * 
+	 * 
+	 * ----|--------------------
+	 * |   xstart 
+	 * |__ tablestart
+	 * |
+	 * |
+	 * |page 1
+	 * 
+	 * ----|--------------------
+	 * |   xstart 
+	 * |__ ystart
+	 * |
+	 * |
+	 * |page 2 ......
+	 * 
+	 * 
+	 * u style the table header fill color by changing values in drawRows Method 
+	 * 
+	 * table plugin uses the fontSize and fontStyle set by the user 
+	 * 
+	 */
+					
+	height = doc.drawTable(data, {xstart:10,ystart:10,tablestart:450,marginleft:50});
+	doc.text(50, height + 20, 'hi world');
+	doc.save("some-file.pdf");
+	};
+</script>
+</head>
+<body>
+	<button onclick="generate()">
+		Generate
+	</button>
+</body>
 </html>
