@@ -157,9 +157,7 @@ jsPDFAPI.insertData = function(iR, jC, rdim, data, brControl) {
 				}
 				cell = cell + '';
 				if (((cell.length * fontSize) + xOffset) > (width)) {
-					// iTexts = (cell.length * (fontSize)) / (width * 2);
 					iTexts=cell.length*fontSize;
-					//iTexts = Math.ceil(iTexts);
 					start = 0;
 					end = 0;
 					ih = 0;
@@ -167,7 +165,6 @@ jsPDFAPI.insertData = function(iR, jC, rdim, data, brControl) {
 						this.setFont(this.getFont().fontName, "bold");
 					}
 					for ( j = 0; j < iTexts; j++) {
-						// end += Math.ceil((width / (Math.ceil((fontSize) - fontSize * 0.4))));
 						end+=Math.ceil(2*width/fontSize);
 						this.text(x, y + ih, cell.substring(start, end));
 						start = end;
