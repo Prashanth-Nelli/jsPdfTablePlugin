@@ -1,0 +1,53 @@
+<html>
+	<head>
+		<script src="jspdf.js"></script>
+		<script src="libs/Deflate/adler32cs.js"></script>
+		<script src="libs/FileSaver.js/FileSaver.js"></script>
+		<script src="libs/Blob.js/BlobBuilder.js"></script>
+		<script src="jspdf.plugin.table.js"></script>
+		<script>
+			var data = [], fontSize = 12, height = 0, doc;
+			doc = new jsPDF('p', 'pt', 'a4', true);
+			doc.setFont("times", "normal");
+			doc.setFontSize(fontSize);
+			doc.text(20, 10, "hi table");
+			function generate() {
+				data = doc.tableToJson('tbl');
+				height = doc.drawTable(data, {
+					xstart : 10,
+					ystart : 10,
+					tablestart : 70,
+					marginleft : 10
+				});
+				doc.text(50, height + 20, 'hi world');
+				doc.save("some-file.pdf");
+			};
+		</script>
+	</head>
+	<body>
+		<button onclick="generate()">
+			Generate
+		</button>
+		<table id="tbl">
+			<thead>
+				<tr>
+					<th>cell1Name</th><th>cell2Name</th><th>cell3Name</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>cell1 row1</td><td>cell2 row1</td><td>cell3 row1</td>
+				</tr>
+				<tr>
+					<td>cell1 row2</td><td>cell2 row2</td><td>cell3 row2</td>
+				</tr>
+				<tr>
+					<td>cell1 row3</td><td>cell2 row3</td><td>cell3 row3</td>
+				</tr>
+				<tr>
+					<td>cell1 row4</td><td>cell2 row4</td><td>cell3 row4</td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+</html>

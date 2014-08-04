@@ -11,7 +11,7 @@ jsPdfTablePlugin return's the current y position of Document,for further edition
 
 height = doc.drawTable(objectArray,object); both parameters are mandatory 
 
-object properties xstart ,ystart,tablestart,marginleft.
+object properties xstart ,ystart,tablestart,marginleft,xOffset,yOffset.
 
 xstart      -  horizontal starting position for table 
 
@@ -21,7 +21,15 @@ ystart      -  vertical starting position for table in next pages if the records
 
 marginleft  -  this plugin uses full page width if u you wish to decrese the width of table increase marginleft value
 
-doc.drawTable returns current co-ordinates values u can use those values for further editing .
+xOffset     -  horizontal padding in cell //Optional default value 10px
+
+yOffset     -  vetrical padding in cell // Optional default value 10px
+
+doc.drawTable returns current editing position.  
+
+if the returned valueis doc.internal.pageSize.height you should 
+ 
+add a new page for further editing
 
 u style the table header fill color by changing values in drawRows Method 
 
@@ -53,10 +61,54 @@ doc.save("some-file.pdf");
 };
 <pre>
 
-  
+Converting table to JSON
+==============================  
 
+jsPdfTablePlugin provides tableToJson method this converts the table into json array
 
+tableToJson(id) method accepts one argument it should be an id of a table 
+
+usage :- var doc = new jsPDF('p','pt','a4',true);
+
+			 data=doc.tableToJson(id) //returns json array
+
+Note:- colspan feature is not supported
+
+<table id="tableOne">
+	<thead>
+		<tr>
+			<th></th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td></td>
+			<td></td>				
+		</tr>
+	</tbody>
+<table> 
  
- 
- 
+if the table is written in this format then cell values in <thead> section are
+
+considered as keys for the objects in json array
+
+<table id="tableOne">
+	<tr>
+		<td></td>
+		<td></td>				
+	</tr>
+	<tr>
+		<td></td>
+		<td></td>				
+	</tr>
+	<tr>
+		<td></td>
+		<td></td>				
+	</tr>
+<table> 
+
+if the table is written in this format then cell values in first row are
+
+considered as keys for the objects in json array 
  
