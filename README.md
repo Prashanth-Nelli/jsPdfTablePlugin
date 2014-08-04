@@ -68,47 +68,13 @@ jsPdfTablePlugin provides tableToJson method this converts the table into json a
 
 tableToJson(id) method accepts one argument it should be an id of a table 
 
-usage :- var doc = new jsPDF('p','pt','a4',true);
-
-			 data=doc.tableToJson(id) //returns json array
+usage :-
+<pre>
+	var doc = new jsPDF('p','pt','a4',true);
+	data=doc.tableToJson(id) //returns json array
+</pre>
+	
 
 Note:- colspan feature is not supported
 
-<table id="tableOne">
-	<thead>
-		<tr>
-			<th></th>
-			<th></th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td></td>
-			<td></td>				
-		</tr>
-	</tbody>
-<table> 
- 
-if the table is written in this format then cell values in <thead> section are
-
-considered as keys for the objects in json array
-
-<table id="tableOne">
-	<tr>
-		<td></td>
-		<td></td>				
-	</tr>
-	<tr>
-		<td></td>
-		<td></td>				
-	</tr>
-	<tr>
-		<td></td>
-		<td></td>				
-	</tr>
-<table> 
-
-if the table is written in this format then cell values in first row are
-
-considered as keys for the objects in json array 
- 
+tableToJson method assusmes first row in the table to be the keys of the objects in jsonarray
