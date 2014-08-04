@@ -47,7 +47,7 @@ doc.setFont("courier", "normal");
 doc.setFontSize(fontSize);
 doc.text(50,100,"hi table");
 function generate() {
-for (var insert = 0; insert <= 20; insert++) {
+for (var insert = 0; insert &lt= 20; insert++) {
 	data.push({
 		"name" : "jspdf plugin",
 		"version" : insert,
@@ -73,7 +73,5 @@ usage :-
 	var doc = new jsPDF('p','pt','a4',true);
 	data=doc.tableToJson(id) //returns json array
 </pre>
-
 Note:- colspan feature is not supported
-
 tableToJson method assusmes first row in the table to be the keys of the objects in jsonarray
