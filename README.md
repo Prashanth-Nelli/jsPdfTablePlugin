@@ -73,7 +73,6 @@ usage :-
 	var doc = new jsPDF('p','pt','a4',true);
 	data=doc.tableToJson(id) //returns json array
 </pre>
-	
 
 Note:- colspan feature is not supported
 
