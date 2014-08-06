@@ -238,7 +238,7 @@ jsPDFAPI.calrdim = function(data, rdim) {
 	x = rdim[0];
 	y = rdim[1];
 	lengths = [];
-	for (var i = 0; i < data.length > 0; i++) {
+	for (var i = 0; i < data.length; i++) {
 		obj = data[i];
 		length = 0;
 		for (var key in obj) {
