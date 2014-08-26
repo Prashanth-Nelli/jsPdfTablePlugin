@@ -315,7 +315,7 @@ jsPDFAPI.tableToJson=function(id){
 		obj={};
 		for(i=0;i<noOfCells;i++){
 			try{
-				obj[keys[i]]=rows[j].cells[i].textContent;
+				obj[keys[i]]=rows[j].cells[i].textContent.replace(/^\s+|\s+$/gm,'');
 			}catch(ex){
 				obj[keys[i]]='';
 			}	
