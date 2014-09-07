@@ -75,9 +75,9 @@ jsPDFAPI.insertHeader = function(data) {
 
 jsPDFAPI.initPDF = function(data,marginConfig,firstpage) {
 	if(firstpage){
-		dim = [marginConfig.xstart,marginConfig.tablestart,this.internal.pageSize.width-marginConfig.xstart-20-marginConfig.marginleft, 250,marginConfig.ystart,marginConfig.marginleft];
+		dim = [marginConfig.xstart,marginConfig.tablestart,this.internal.pageSize.width-marginConfig.xstart-20-marginConfig.marginright, 250,marginConfig.ystart,marginConfig.marginright];
 	}else{
-		dim = [marginConfig.xstart,marginConfig.ystart,this.internal.pageSize.width-marginConfig.xstart-20-marginConfig.marginleft, 250,marginConfig.ystart,marginConfig.marginleft];	
+		dim = [marginConfig.xstart,marginConfig.ystart,this.internal.pageSize.width-marginConfig.xstart-20-marginConfig.marginright, 250,marginConfig.ystart,marginConfig.marginright];	
 	}
 	columnCount = this.calColumnCount(data);
 	rowCount = data.length;
@@ -99,7 +99,7 @@ jsPDFAPI.drawTable = function(table_DATA, marginConfig) {
 			xstart:20,
 			ystart:20,
 			tablestart:20,
-			marginleft:20,
+			marginright:20,
 			xOffset:10,
 			yOffset:10
 		}
@@ -108,7 +108,7 @@ jsPDFAPI.drawTable = function(table_DATA, marginConfig) {
 			xstart:20,
 			ystart:20,
 			tablestart:20,
-			marginleft:20,
+			marginright:20,
 			xOffset:10,
 			yOffset:10
 		}
