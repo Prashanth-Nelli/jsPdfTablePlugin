@@ -35,6 +35,7 @@ u style the table header fill color by changing values in drawRows Method
 
 table plugin uses the fontSize and fontStyle set by the user
 
+=======================================================================
 
 Example code :-
 ===================================================================
@@ -59,6 +60,8 @@ doc.text(50, height + 20, 'hi world');
 doc.save("some-file.pdf");
 };
 <pre>
+
+==========================================================================
 
 Converting table to JSON
 ==============================  
