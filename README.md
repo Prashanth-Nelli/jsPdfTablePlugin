@@ -2,7 +2,7 @@ jsPdfTablePlugin
 ================
 
 
-jsPdfTablePlugin expects an array of objects and an object specifyingrequired table positioning values as an input,
+jsPdfTablePlugin expects an array of objects,
 
 Each key in the object represents a column,and the no of rows will be equal to input data length,
 
@@ -27,7 +27,7 @@ yOffset     -  vetrical padding in cell // Optional default value 10px
 
 doc.drawTable returns current editing position.  
 
-if the returned valueis doc.internal.pageSize.height you should 
+if the returned value is doc.internal.pageSize.height you should 
  
 add a new page for further editing
 
@@ -37,7 +37,6 @@ table plugin uses the fontSize and fontStyle set by the user
 
 
 Example code :-
-
 ===================================================================
 
 <pre>
@@ -47,12 +46,12 @@ doc.setFont("courier", "normal");
 doc.setFontSize(fontSize);
 doc.text(50,100,"hi table");
 function generate() {
-for (var insert = 0; insert &lt= 20; insert++) {
+for (var insert = 0; insert<= 20; insert++) {
 	data.push({
 		"name" : "jspdf plugin",
 		"version" : insert,
 		"author" : "Prashanth Nelli",
-		"Designation" : "AngularJs Developer king is king so king also king"
+		"Designation" : "AngularJs Developer"
 	});
 }
 height = doc.drawTable(data, {xstart:10,ystart:10,tablestart:70,marginleft:50});
@@ -69,9 +68,9 @@ jsPdfTablePlugin provides tableToJson method this converts the table into json a
 tableToJson(id) method accepts one argument it should be an id of a table 
 
 usage :-
-<pre>
-	var doc = new jsPDF('p','pt','a4',true);
-	data=doc.tableToJson(id) //returns json array
-</pre>
+
+var doc = new jsPDF('p','pt','a4',true);
+data=doc.tableToJson(id) //returns json array
+
 Note:- colspan feature is not supported
 tableToJson method assusmes first row in the table to be the keys of the objects in jsonarray
