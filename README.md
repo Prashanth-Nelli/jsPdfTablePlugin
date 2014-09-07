@@ -47,7 +47,7 @@ doc.setFont("courier", "normal");
 doc.setFontSize(fontSize);
 doc.text(50,100,"hi table");
 function generate() {
-for (var insert = 0; insert<= 20; insert++) {
+for (var insert = 0; insert &lt;= 20; insert++) {
 	data.push({
 		"name" : "jspdf plugin",
 		"version" : insert,
@@ -60,7 +60,6 @@ doc.text(50, height + 20, 'hi world');
 doc.save("some-file.pdf");
 };
 </pre>
-'''
 ==========================================================================
 
 Converting table to JSON
