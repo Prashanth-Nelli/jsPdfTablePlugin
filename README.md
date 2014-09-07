@@ -1,25 +1,24 @@
 jsPdfTablePlugin
 ================
 
+height = doc.drawTable(objectArray,configObject); both parameters are mandatory 
 
-jsPdfTablePlugin expects an array of objects,
+jsPdfTablePlugin expects an objectArray and configObject
 
-Each key in the object represents a column,and the no of rows will be equal to input data length,
+Each key in an object in objectArray represents a column,and the no of rows will be equal to objectArray length,
 
 jsPdfTablePlugin return's the current y position of Document,for further edition of Document.
 
 
-height = doc.drawTable(objectArray,object); both parameters are mandatory 
+ConfigObject properties xstart ,ystart,tablestart,marginright,xOffset,yOffset.
 
-object properties xstart ,ystart,tablestart,marginleft,xOffset,yOffset.
-
-xstart      -  horizontal starting position for table 
+xstart      -  horizontal starting position for table(it works as marginleft) 
 
 tablestart  -  vertical starting position for table in the starting page
 
 ystart      -  vertical starting position for table in next pages if the records exceed present page
 
-marginleft  -  this plugin uses full page width if u you wish to decrese the width of table increase marginleft value
+marginright  -  this plugin uses full page width if u you wish to decrese the width of table increase marginleft value
 
 xOffset     -  horizontal padding in cell //Optional default value 10px
 
@@ -27,11 +26,11 @@ yOffset     -  vetrical padding in cell // Optional default value 10px
 
 doc.drawTable returns current editing position.  
 
-if the returned value is doc.internal.pageSize.height you should 
+if the returned value is greater than  doc.internal.pageSize.height you should 
  
 add a new page for further editing
 
-u style the table header fill color by changing values in drawRows Method 
+u can change  the table header fill color by changing values in drawRows Method 
 
 table plugin uses the fontSize and fontStyle set by the user
 
