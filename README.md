@@ -59,7 +59,7 @@ height = doc.drawTable(data, {xstart:10,ystart:10,tablestart:70,marginleft:50});
 doc.text(50, height + 20, 'hi world');
 doc.save("some-file.pdf");
 };
-<pre>
+</pre>
 
 ==========================================================================
 
