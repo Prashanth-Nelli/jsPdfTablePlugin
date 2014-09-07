@@ -20,9 +20,9 @@ ystart      -  vertical starting position for table in next pages if the records
 
 marginright  -  this plugin uses full page width if u you wish to decrese the width of table increase marginleft value
 
-xOffset     -  horizontal padding in cell //Optional default value 10px
+xOffset     -  horizontal padding in cell //Optional default value 10px(don't give larger padding values)
 
-yOffset     -  vetrical padding in cell // Optional default value 10px
+yOffset     -  vetrical padding in cell // Optional default value 10px(don't give larger padding values)
 
 doc.drawTable returns current editing position.  
 
