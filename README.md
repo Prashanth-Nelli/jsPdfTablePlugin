@@ -39,7 +39,7 @@ table plugin uses the fontSize and fontStyle set by the user
 
 Example code :-
 ===================================================================
-
+'''html
 <pre>
 var data = [],fontSize = 12, height = 0,doc;
 doc = new jsPDF('p', 'pt', 'a4', true);
@@ -60,7 +60,7 @@ doc.text(50, height + 20, 'hi world');
 doc.save("some-file.pdf");
 };
 </pre>
-
+'''
 ==========================================================================
 
 Converting table to JSON
