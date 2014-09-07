@@ -39,7 +39,6 @@ table plugin uses the fontSize and fontStyle set by the user
 
 Example code :-
 ===================================================================
-'''html
 <pre>
 var data = [],fontSize = 12, height = 0,doc;
 doc = new jsPDF('p', 'pt', 'a4', true);
@@ -70,9 +69,9 @@ jsPdfTablePlugin provides tableToJson method this converts the table into json a
 tableToJson(id) method accepts one argument it should be an id of a table 
 
 usage :-
-
+<pre>
 var doc = new jsPDF('p','pt','a4',true);
 data=doc.tableToJson(id) //returns json array
-
+</pre>
 Note:- colspan feature is not supported
 tableToJson method assusmes first row in the table to be the keys of the objects in jsonarray
