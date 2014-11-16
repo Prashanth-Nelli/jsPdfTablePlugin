@@ -1,7 +1,29 @@
 jsPdfTablePlugin
 ================
 
-height = doc.drawTable(objectArray,configObject); both parameters are mandatory 
+####How to use jsPdfTablePlugin
+
+```javascript
+	
+	/* install using bower */
+	bower install jspdf-table-plugin
+	
+```
+```
+	(OR)
+```
+```
+Download the file  jspdf.plugin.table.js from this repository
+
+```
+
+
+```javascript
+	height = doc.drawTable(objectArray,configObject) 
+	/* both parameters are mandatory */
+```
+
+```
 
 jsPdfTablePlugin expects an objectArray and configObject
 
@@ -34,43 +56,64 @@ u can change  the table header fill color by changing values in drawRows Method
 
 table plugin uses the fontSize and fontStyle set by the user
 
+```
+
 =======================================================================
 
 Example code :-
 ===================================================================
-<pre>
-var data = [],fontSize = 12, height = 0,doc;
+```javascript
+
+var data = []
+    ,fontSize = 12
+    ,height = 0
+    ,doc
+    ;
+	
 doc = new jsPDF('p', 'pt', 'a4', true);
 doc.setFont("courier", "normal");
 doc.setFontSize(fontSize);
 doc.text(50,100,"hi table");
+
 function generate() {
-for (var insert = 0; insert &lt;= 20; insert++) {
-	data.push({
-		"name" : "jspdf plugin",
-		"version" : insert,
-		"author" : "Prashanth Nelli",
-		"Designation" : "AngularJs Developer"
-	});
-}
-height = doc.drawTable(data, {xstart:10,ystart:10,tablestart:70,marginleft:50});
-doc.text(50, height + 20, 'hi world');
-doc.save("some-file.pdf");
+	for (var insert = 0; insert &lt;= 20; insert++) {
+		data.push({
+			"name" : "jspdf plugin",
+			"version" : insert,
+			"author" : "Prashanth Nelli",
+			"Designation" : "AngularJs Developer"
+		});
+	}
+	height = doc.drawTable(data, {xstart:10,ystart:10,tablestart:70,marginleft:50});
+	doc.text(50, height + 20, 'hi world');
+	doc.save("some-file.pdf");
 };
-</pre>
+
+```
 ==========================================================================
 
 Converting table to JSON
 ==============================  
+```
 
 jsPdfTablePlugin provides tableToJson method this converts the table into json array
 
 tableToJson(id) method accepts one argument it should be an id of a table 
 
 usage :-
-<pre>
+
+```
+
+```javascript
+
 var doc = new jsPDF('p','pt','a4',true);
 data=doc.tableToJson(id) //returns json array
-</pre>
+
+```
+
+```
+
 Note:- colspan feature is not supported
 tableToJson method assusmes first row in the table to be the keys of the objects in jsonarray
+
+```
