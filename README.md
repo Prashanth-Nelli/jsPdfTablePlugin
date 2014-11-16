@@ -13,10 +13,11 @@ jsPdfTablePlugin
 	(OR)
 ```
 ```
-Download the file  jspdf.plugin.table.js from this repository
+	Download the file  jspdf.plugin.table.js from this repository
 
 ```
 
+###Docs
 
 ```javascript
 	height = doc.drawTable(objectArray,configObject) 
@@ -27,24 +28,27 @@ Download the file  jspdf.plugin.table.js from this repository
 
 jsPdfTablePlugin expects an objectArray and configObject
 
-Each key in an object in objectArray represents a column,and the no of rows will be equal to objectArray length,
+Each key in an object in objectArray represents a column,and the 
+
+no of rows will be equal to objectArray length.
 
 jsPdfTablePlugin return's the current y position of Document,for further edition of Document.
 
 
 ConfigObject properties xstart ,ystart,tablestart,marginright,xOffset,yOffset.
 
-xstart      -  horizontal starting position for table(it works as marginleft) 
+xstart      -  	horizontal starting position for table(it works as marginleft) 
 
-tablestart  -  vertical starting position for table in the starting page
+tablestart  -  	vertical starting position for table in the starting page
 
-ystart      -  vertical starting position for table in next pages if the records exceed present page
+ystart      -  	vertical starting position for table in next pages if the records exceed present page
 
-marginright  -  this plugin uses full page width if u you wish to decrese the width of table increase marginleft value
+marginright -  	this plugin uses full page width if u you wish to decrese the width of table increase
+		marginleft value
 
-xOffset     -  horizontal padding in cell //Optional default value 10px(don't give larger padding values)
+xOffset     -  	horizontal padding in cell //Optional default value 10px(don't give larger padding values)
 
-yOffset     -  vetrical padding in cell // Optional default value 10px(don't give larger padding values)
+yOffset     -  	vetrical padding in cell // Optional default value 10px(don't give larger padding values)
 
 doc.drawTable returns current editing position.  
 
