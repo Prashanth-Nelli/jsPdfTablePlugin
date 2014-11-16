@@ -1,0 +1,15 @@
+{
+	"name": "jsPdfTablePlugin",
+	"version": "1.0.1",
+	"homepage": "https://github.com/Prashanth-Nelli/jsPdfTablePlugin",
+	"description": "A plugin which generates tables",
+	"main": "jspdf.plugin.table.js",
+	"keywords": ["table", "jspdf plugin", "pdf"],
+	"moduleType": ["globals"],
+	"dependencies": {
+		"jspdf": "~1.0.272"
+	},
+	"authors": ["Nelli.Prashanth Kumar"],
+	"license": "MIT",
+	"ignore": ["**/.*", "node_modules", "bower_components", "test", "tests"]
+}
