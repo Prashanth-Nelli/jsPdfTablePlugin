@@ -43,8 +43,8 @@ tablestart  -  	vertical starting position for table in the starting page
 
 ystart      -  	vertical starting position for table in next pages if the records exceed present page
 
-marginright -  	this plugin uses full page width if u you wish to decrese the width of table increase
-		marginleft value
+marginright -  	this plugin uses full page width if u you wish to decrese the width of table increase 
+                marginleft value
 
 xOffset     -  	horizontal padding in cell //Optional default value 10px(don't give larger padding values)
 
