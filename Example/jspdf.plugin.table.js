@@ -186,7 +186,7 @@ jsPDFAPI.insertData = function(iR, jC, rdim, data, brControl) {
 						this.setFont(this.getFont().fontName, "bold");
 					}
 					for ( j = 0; j < iTexts; j++) {
-						end+=Math.ceil(2*width/fontSize);
+						end+=Math.floor(2*width/fontSize)-Math.ceil(xOffset/fontSize);
 						this.text(x, y + ih, cell.substring(start, end));
 						start = end;
 						ih += fontSize;
@@ -252,7 +252,7 @@ jsPDFAPI.calrdim = function(data, rdim) {
 	}
 	heights = [];
 	for (var i = 0; i < lengths.length; i++) {
-		if ((lengths[i] * (fontSize)) > height) {
+		if ((lengths[i] * (fontSize)) > width) {
 			nlines = Math.ceil((lengths[i] * (fontSize)) / width);
 			heights[i] = (nlines) * (fontSize / 2) + fontSize;
 		} else {
