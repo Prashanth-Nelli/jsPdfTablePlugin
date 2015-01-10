@@ -62,6 +62,15 @@ table plugin uses the fontSize and fontStyle set by the user
 
 ```
 
+####Note:-
+
+```
+xOffset and yOffset values should not be morethan 15 if it is more than this value plugin may not handle
+the operation properly.
+
+```
+
+
 =======================================================================
 
 Example code :-
@@ -121,3 +130,18 @@ Note:- colspan feature is not supported
 tableToJson method assusmes first row in the table to be the keys of the objects in jsonarray
 
 ```
+
+
+####These the following Edge cases where this plugin might not work properly
+```
+1.If the no of  rows consists of large blocks is more.
+2.xOffset and yOffset values are more than the recommended value 15
+
+```
+
+###Planned Features:-
+
+##### Providing options for customizing the table in style.
+##### Providing options for improving the look and feel of table
+
+
