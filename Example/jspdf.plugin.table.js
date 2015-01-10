@@ -75,9 +75,9 @@ jsPDFAPI.insertHeader = function(data) {
 
 jsPDFAPI.initPDF = function(data,marginConfig,firstpage) {
 	if(firstpage){
-		dim = [marginConfig.xstart,marginConfig.tablestart,this.internal.pageSize.width-marginConfig.xstart-20-marginConfig.marginright, 250,marginConfig.ystart,marginConfig.marginright];
+		dim = [marginConfig.xstart,marginConfig.tablestart,this.internal.pageSize.width-marginConfig.xstart-20-marginConfig.marginright, 250,marginConfig.ystart,marginConfig.marginright,marginConfig.xOffset||5,marginConfig.yOffset || 5];
 	}else{
-		dim = [marginConfig.xstart,marginConfig.ystart,this.internal.pageSize.width-marginConfig.xstart-20-marginConfig.marginright, 250,marginConfig.ystart,marginConfig.marginright];	
+		dim = [marginConfig.xstart,marginConfig.ystart,this.internal.pageSize.width-marginConfig.xstart-20-marginConfig.marginright, 250,marginConfig.ystart,marginConfig.marginright,marginConfig.xOffset||5,marginConfig.yOffset || 5];	
 	}
 	columnCount = this.calColumnCount(data);
 	rowCount = data.length;
@@ -95,7 +95,7 @@ jsPDFAPI.drawTable = function(table_DATA, marginConfig) {
 	//this.setFont("times", "normal");
 	fontSize = this.internal.getFontSize();
 	if(!marginConfig){
-		maringConfig={
+		marginConfig={
 			xstart:20,
 			ystart:20,
 			tablestart:20,
@@ -252,11 +252,11 @@ jsPDFAPI.calrdim = function(data, rdim) {
 	}
 	heights = [];
 	for (var i = 0; i < lengths.length; i++) {
-		if ((lengths[i] * (fontSize)) > width) {
+		if ((lengths[i] * (fontSize)) > (width-rdim[5])) {
 			nlines = Math.ceil((lengths[i] * (fontSize)) / width);
-			heights[i] = (nlines) * (fontSize / 2) + fontSize;
+			heights[i] = (nlines) * (fontSize / 2) +rdim[6]+10;
 		} else {
-			heights[i] = (fontSize + (fontSize / 2));
+			heights[i] = (fontSize + (fontSize / 2))+rdim[6];
 		}
 	}
 	value = 0;
@@ -265,7 +265,7 @@ jsPDFAPI.calrdim = function(data, rdim) {
 	for (var i = 0; i < heights.length; i++) {
 		value += heights[i];
 		indexHelper += heights[i];
-		if (indexHelper > (this.internal.pageSize.height - pageStart-30)) {
+		if (indexHelper > (this.internal.pageSize.height - pageStart)) {
 			SplitIndex.push(i);
 			indexHelper = 0;
 			pageStart = rdim[4]+30;
