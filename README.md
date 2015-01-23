@@ -132,7 +132,7 @@ tableToJson method assusmes first row in the table to be the keys of the objects
 ```
 
 
-####These the following Edge cases where this plugin might not work properly
+####These are the following Edge cases where this plugin might not work properly
 ```
 1.If the no of  rows consists of large blocks is more.
 2.xOffset and yOffset values are more than the recommended value 15
