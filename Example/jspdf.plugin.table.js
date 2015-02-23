@@ -256,7 +256,7 @@ jsPDFAPI.calrdim = function(data, rdim) {
 			nlines = Math.ceil((lengths[i] * (fontSize)) / width);
 			heights[i] = (nlines) * (fontSize / 2) +rdim[6]+10;
 		} else {
-			heights[i] = (fontSize + (fontSize / 2))+rdim[6];
+			heights[i] = (fontSize + (fontSize / 2))+rdim[6]+10;
 		}
 	}
 	value = 0;
