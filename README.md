@@ -143,5 +143,6 @@ tableToJson method assusmes first row in the table to be the keys of the objects
 
 ##### Providing options for customizing the table in style.
 ##### Providing options for improving the look and feel of table
+##### Stripped table like look and feel option.
 
 
