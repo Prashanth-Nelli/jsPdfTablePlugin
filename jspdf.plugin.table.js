@@ -21,17 +21,13 @@
 		var heights = [];
 		var fontSize;
 		var jg;
-		var i;
 		var tabledata = [];
-		var x;
-		var y;
 		var xOffset;
 		var yOffset;
 		var iTexts;
 		var start;
 		var end;
 		var ih;
-		var length;
 		var lengths;
 		var row;
 		var obj;
@@ -56,11 +52,24 @@
 		// intialize the dimension array, column count and row count
 
 		jsPDFAPI.initPDF = function(data, marginConfig, firstpage) {
+			
+			dim = [];
+			
+			dim[0] = marginConfig.xstart;
+			
 			if (firstpage) {
-				dim = [marginConfig.xstart, marginConfig.tablestart, this.internal.pageSize.width - marginConfig.xstart - 20 - marginConfig.marginright, 250, marginConfig.ystart, marginConfig.marginright, marginConfig.xOffset || 5, marginConfig.yOffset || 5];
+				dim[1] = marginConfig.tablestart;
 			} else {
-				dim = [marginConfig.xstart, marginConfig.ystart, this.internal.pageSize.width - marginConfig.xstart - 20 - marginConfig.marginright, 250, marginConfig.ystart, marginConfig.marginright, marginConfig.xOffset || 5, marginConfig.yOffset || 5];
+				dim[1] = marginConfig.ystart;
 			}
+			
+			dim[2] = this.internal.pageSize.width - marginConfig.xstart - 20 - marginConfig.marginright;
+			dim[3] = 250;
+			dim[4] = marginConfig.ystart;
+			dim[5] = marginConfig.marginright;
+			dim[6] = marginConfig.xOffset || 5;
+			dim[7] = marginConfig.yOffset || 5;
+
 			columnCount = this.calColumnCount(data);
 			rowCount = data.length;
 			width = dim[2] / columnCount;
@@ -215,13 +224,13 @@
 		//calculates dimensions based on the data array and returns y position for further editing of document
 
 		jsPDFAPI.calrdim = function(data, rdim) {
-			row = 0;
-			x = rdim[0];
-			y = rdim[1];
+			var row = 0;
+			var x = rdim[0];
+			var y = rdim[1];
 			lengths = [];
 			for (var i = 0; i < data.length; i++) {
-				obj = data[i];
-				length = 0;
+				var obj = data[i];
+				var length = 0;
 				for (var key in obj) {
 					if (obj[key] !== null) {
 						if (length < obj[key].length) {
@@ -258,10 +267,12 @@
 		//draw rows based on the length of data array
 
 		jsPDFAPI.drawRows = function(i, rdim, hrControl) {
-			x = rdim[0];
-			y = rdim[1];
-			w = rdim[2];
-			h = rdim[3] / i;
+
+			var x = rdim[0];
+			var y = rdim[1];
+			var w = rdim[2];
+			var h = rdim[3] / i;
+
 			for (var j = 0; j < i; j++) {
 				if (j === 0 && hrControl) {
 					this.setFillColor(182, 192, 192);
@@ -279,7 +290,16 @@
 		//converts table to json
 
 		jsPDFAPI.tableToJson = function(id) {
-			var table = document.getElementById(id), keys = [], rows = table.rows, noOfRows = rows.length, noOfCells = table.rows[0].cells.length, i = 0, j = 0, data = [], obj = {};
+
+			var table = document.getElementById(id);
+			var keys = [];
+			var rows = table.rows;
+			var noOfRows = rows.length;
+			var noOfCells = table.rows[0].cells.length;
+			var i = 0;
+			var j = 0;
+			var data = [];
+			var obj = {};
 
 			for ( i = 0; i < noOfCells; i++) {
 				keys.push(rows[0].cells[i].textContent);
