@@ -1,6 +1,8 @@
 jsPdfTablePlugin
 ================
 
+[![Join the chat at https://gitter.im/Prashanth-Nelli/jsPdfTablePlugin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Prashanth-Nelli/jsPdfTablePlugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ####How to use jsPdfTablePlugin
 
 ```javascript
