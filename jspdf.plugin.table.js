@@ -52,17 +52,17 @@
 		// intialize the dimension array, column count and row count
 
 		jsPDFAPI.initPDF = function(data, marginConfig, firstpage) {
-			
+
 			dim = [];
-			
+
 			dim[0] = marginConfig.xstart;
-			
+
 			if (firstpage) {
 				dim[1] = marginConfig.tablestart;
 			} else {
 				dim[1] = marginConfig.ystart;
 			}
-			
+
 			dim[2] = this.internal.pageSize.width - marginConfig.xstart - 20 - marginConfig.marginright;
 			dim[3] = 250;
 			dim[4] = marginConfig.ystart;
@@ -211,10 +211,11 @@
 		//draws columns based on the caluclated dimensions
 
 		jsPDFAPI.drawColumns = function(i, rdim) {
-			x = rdim[0];
-			y = rdim[1];
-			w = rdim[2] / i;
-			h = rdim[3];
+			var x = rdim[0];
+			var y = rdim[1];
+			var w = rdim[2] / i;
+			var h = rdim[3];
+			
 			for (var j = 0; j < i; j++) {
 				this.rect(x, y, w, h);
 				x += w;
