@@ -99,7 +99,7 @@ jsPDFAPI.drawTable = function(table_DATA, marginConfig) {
 			this.pdf(tabledata, dimensions, true, false);
 			pageStart = defaultConfig.ystart;
 			this.initPDF(tabledata, defaultConfig, false);
-			jg = cSplitIndex[i];
+			j = cSplitIndex[i];
 			if ((i + 1) != cSplitIndex.length) {
 				this.addPage();
 			}
@@ -115,7 +115,6 @@ jsPDFAPI.drawTable = function(table_DATA, marginConfig) {
 //calls methods in a sequence manner required to draw table
 
 jsPDFAPI.pdf = function(table, dimensions, hControl, bControl) {
-	
 	columnCount = this.calColumnCount(table);
 	rowCount = table.length;
 	dimensions[3] = this.calculateDim(table, dimensions);
@@ -125,7 +124,6 @@ jsPDFAPI.pdf = function(table, dimensions, hControl, bControl) {
 	this.drawColumns(columnCount, dimensions);
 	nextStart = this.insertData(rowCount, columnCount, dimensions, table, bControl);
 	return nextStart;
-	
 };
 
 //inserts text into the table
