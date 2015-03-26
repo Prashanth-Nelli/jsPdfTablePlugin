@@ -17,7 +17,6 @@
 		var cSplitIndex = [];
 		var indexHelper = 0;
 		var heights = [];
-		var tabledata = [];
 		var lengths;
 		var nlines;
 		var nextStart;
@@ -74,11 +73,11 @@
 		//draws table on the document
 
 		jsPDFAPI.drawTable = function(table_DATA, marginConfig) {
-			var fdata = [];
-			var sdata = [];
+
 			var self = this;
 			var i = 0;
 			var j = 0;
+			var tabledata = [];
 
 			SplitIndex = [];
 			cSplitIndex = [];
