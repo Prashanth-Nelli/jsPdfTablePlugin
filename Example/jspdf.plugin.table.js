@@ -17,6 +17,7 @@
 	var heights = [];
 	var nextStart;
 	var pageStart = 0;
+	var doc;
 
 	var defaultConfig = {
 		xstart : 20,
@@ -70,10 +71,10 @@ jsPDFAPI.initPDF = function(data, marginConfig, firstpage) {
 
 jsPDFAPI.drawTable = function(table_DATA, marginConfig) {
 
-	var self = this;
 	var i = 0;
 	var j = 0;
 	var tabledata = [];
+	doc = this;
 
 	if (!marginConfig) {
 		marginConfig = {};
@@ -89,7 +90,7 @@ jsPDFAPI.drawTable = function(table_DATA, marginConfig) {
 
 	this.initPDF(table_DATA, defaultConfig, true);
 
-	if ((dimensions[3] + defaultConfig.tablestart) > (self.internal.pageSize.height)) {
+	if ((dimensions[3] + defaultConfig.tablestart) > (doc.internal.pageSize.height)) {
 		cSplitIndex = SplitIndex;
 		cSplitIndex.push(table_DATA.length);
 		for (; i < cSplitIndex.length; i++) {
@@ -129,8 +130,7 @@ jsPDFAPI.pdf = function(table, dimensions, hControl, bControl) {
 //inserts text into the table
 
 jsPDFAPI.insertData = function(rowCount, columnCount, dimensions, data, brControl) {
-	var self = this;
-	var fontSize = self.internal.getFontSize();
+	var fontSize = doc.internal.getFontSize();
 	var xOffset = defaultConfig.xOffset;
 	var yOffset = defaultConfig.yOffset;
 	var iTexts = 0;
@@ -155,7 +155,7 @@ jsPDFAPI.insertData = function(rowCount, columnCount, dimensions, data, brContro
 					end = 0;
 					ih = 0;
 					if ((brControl) && (i === 0)) {
-						self.setFont(self.getFont().fontName, "bold");
+						doc.setFont(doc.getFont().fontName, "bold");
 					}
 					for (var j = 0; j < iTexts; j++) {
 						end += Math.floor(2 * width / fontSize) - Math.ceil(xOffset / fontSize);
