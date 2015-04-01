@@ -7,7 +7,7 @@
 
 ( function(jsPDFAPI) {
 
-var doc		=null;
+var doc		= null;
 var width	= 0;
 var heigth	= 0;
 var rowCount	= 0;
