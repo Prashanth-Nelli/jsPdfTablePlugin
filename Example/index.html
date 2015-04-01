@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<script src="jspdf.js"></script>
-		<script src="libs/FileSaver.js/FileSaver.js"></script>
+		<script src="FileSaver.js"></script>
 		<script src="jspdf.plugin.table.js"></script>
 		<script>
 			/**
@@ -58,7 +58,7 @@
 				doc.setFontSize(fontSize);
 				doc.text(20, 20, "hi table");
 				data = [];
-				for (var insert = 0; insert <= 20; insert++) {
+				for (var insert = 0; insert <= 5; insert++) {
 					data.push({
 						"name" : "jspdf plugin",
 						"version" : insert,

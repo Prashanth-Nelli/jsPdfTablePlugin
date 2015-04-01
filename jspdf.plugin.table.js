@@ -7,17 +7,19 @@
 
 ( function(jsPDFAPI) {
 
-var dimensions = [];
-var columnCount;
-var rowCount;
-var width;
-var heigth;
-var SplitIndex = [];
+var doc			=null;
+var width		= 0;
+var heigth		= 0;
+var rowCount	= 0;
+var nextStart	= 0;
+var columnCount	= 0;
+var pageStart	= 0;
+var heights		= [];
+var SplitIndex	= [];
 var cSplitIndex = [];
-var heights = [];
-var nextStart;
-var pageStart = 0;
-var doc;
+var dimensions	= [];
+
+
 
 var defaultConfig = {
 	xstart : 20,
@@ -30,24 +32,26 @@ var defaultConfig = {
 
 //draws table on the document
 
-jsPDFAPI.drawTable = function(table_DATA, marginConfig) {
+jsPDFAPI.drawTable = function(table_DATA,config) {
 
 	var i = 0;
 	var j = 0;
 	var tabledata = [];
-	doc = this;
 
-	if (!marginConfig) {
-		marginConfig = {};
+	if (!config) {
+		config = {};
 	}
 
 	for (var key in defaultConfig) {
-		if (marginConfig[key]) {
-			defaultConfig[key] = marginConfig[key];
+		if (config[key]) {
+			defaultConfig[key] = config[key];
 		}
 	}
 
+	doc = this;
+	
 	pageStart = defaultConfig.tablestart;
+	
 
 	initPDF(table_DATA, defaultConfig, true);
 
@@ -78,15 +82,15 @@ jsPDFAPI.drawTable = function(table_DATA, marginConfig) {
 
 jsPDFAPI.tableToJson = function(id) {
 
-	var table = document.getElementById(id);
+	var i = 0;
+	var j = 0;
+	var obj = {};
+	var data = [];
 	var keys = [];
 	var rows = table.rows;
 	var noOfRows = rows.length;
+	var table = document.getElementById(id);	
 	var noOfCells = table.rows[0].cells.length;
-	var i = 0;
-	var j = 0;
-	var data = [];
-	var obj = {};
 
 	for ( i = 0; i < noOfCells; i++) {
 		keys.push(rows[0].cells[i].textContent);
