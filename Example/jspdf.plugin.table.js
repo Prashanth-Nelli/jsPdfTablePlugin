@@ -1,69 +1,121 @@
 /** ====================================================================
-* jsPDF table plugin
-* Copyright (c) 2014 Nelli.Prashanth,https://github.com/Prashanth-Nelli
-* Permission is hereby granted, free of charge, to any person obtaining
-* a copy of this software and associated documentation files (the
-* "Software"), to deal in the Software without restriction, including
-* without limitation the rights to use, copy, modify, merge, publish,
-* distribute, sublicense, and/or sell copies of the Software, and to
-* permit persons to whom the Software is furnished to do so, subject to
-* the following conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-* LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-* OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-* WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-* ====================================================================
-*/
+ * jsPDF table plugin
+ * Copyright (c) 2014 Nelli.Prashanth,https://github.com/Prashanth-Nelli
+ * MIT LICENSE
+ * ====================================================================
+ */
 
-(function(jsPDFAPI) {
+( function(jsPDFAPI) {
 
-var  rObj = {}
-	,hObj = {}
-	,data = []
-	,dim = []
-	,columnCount
-	,rowCount
-	,width
-	,heigth
-	,fdata = []
-	,sdata = []
-	,SplitIndex = []
-	,cSplitIndex = []
-	,indexHelper = 0
-	,heights = []
-	,fontSize
-	,jg
-	,i
-	,tabledata = []
-	,x
-	,y
-	,xOffset
-	,yOffset
-	,iTexts
-	,start
-	,end
-	,ih
-	,length
-	,lengths
-	,row
-	,obj
-	,value
-	,nlines
-	,nextStart
-	,propObj={}
-	,pageStart = 0;
+var doc		= null;
+var width	= 0;
+var heigth	= 0;
+var rowCount	= 0;
+var nextStart	= 0;
+var columnCount	= 0;
+var pageStart	= 0;
+var heights	= [];
+var SplitIndex	= [];
+var cSplitIndex = [];
+var dimensions	= [];
+
+
+
+var defaultConfig = {
+	xstart : 20,
+	ystart : 20,
+	tablestart : 20,
+	marginright : 20,
+	xOffset : 10,
+	yOffset : 10
+};
+
+//draws table on the document
+
+jsPDFAPI.drawTable = function(table_DATA,config) {
+
+	var i = 0;
+	var j = 0;
+	var tabledata = [];
+
+	if (!config) {
+		config = {};
+	}
+
+	for (var key in defaultConfig) {
+		if (config[key]) {
+			defaultConfig[key] = config[key];
+		}
+	}
+
+	doc = this;
+	
+	pageStart = defaultConfig.tablestart;
+	
+
+	initPDF(table_DATA, defaultConfig, true);
+
+	if ((dimensions[3] + defaultConfig.tablestart) > (doc.internal.pageSize.height)) {
+		cSplitIndex = SplitIndex;
+		cSplitIndex.push(table_DATA.length);
+		for (; i < cSplitIndex.length; i++) {
+			tabledata = [];
+			tabledata = table_DATA.slice(j, cSplitIndex[i]);
+			insertHeader(tabledata);
+			pdf(tabledata, dimensions, true, false);
+			pageStart = defaultConfig.ystart;
+			initPDF(tabledata, defaultConfig, false);
+			j = cSplitIndex[i];
+			if ((i + 1) != cSplitIndex.length) {
+				doc.addPage();
+			}
+		}
+	} else {
+		insertHeader(table_DATA)
+		pdf(table_DATA, dimensions, true, false);
+	}
+
+	return nextStart;
+};
+
+//converts table to json
+
+jsPDFAPI.tableToJson = function(id) {
+
+	var i = 0;
+	var j = 0;
+	var obj = {};
+	var data = [];
+	var keys = [];
+	var rows = table.rows;
+	var noOfRows = rows.length;
+	var table = document.getElementById(id);	
+	var noOfCells = table.rows[0].cells.length;
+
+	for ( i = 0; i < noOfCells; i++) {
+		keys.push(rows[0].cells[i].textContent);
+	}
+
+	for ( j = 0; j < noOfRows; j++) {
+		obj = {};
+		for ( i = 0; i < noOfCells; i++) {
+			try {
+				obj[keys[i]] = rows[j].cells[i].textContent.replace(/^\s+|\s+$/gm, '');
+			} catch(ex) {
+				obj[keys[i]] = '';
+			}
+		}
+		data.push(obj);
+	}
+	return data.splice(1);
+};
 
 // Inserts Table Head row
 
-jsPDFAPI.insertHeader = function(data) {
-	rObj = {}, hObj = {};
+function insertHeader(data) {
+	
+	var rObj = {};
+	var hObj = {};
 	rObj = data[0];
 	for (var key in rObj) {
 		hObj[key] = key;
@@ -73,134 +125,93 @@ jsPDFAPI.insertHeader = function(data) {
 
 // intialize the dimension array, column count and row count
 
-jsPDFAPI.initPDF = function(data,marginConfig,firstpage) {
-	if(firstpage){
-		dim = [marginConfig.xstart,marginConfig.tablestart,this.internal.pageSize.width-marginConfig.xstart-20-marginConfig.marginright, 250,marginConfig.ystart,marginConfig.marginright,marginConfig.xOffset||5,marginConfig.yOffset || 5];
-	}else{
-		dim = [marginConfig.xstart,marginConfig.ystart,this.internal.pageSize.width-marginConfig.xstart-20-marginConfig.marginright, 250,marginConfig.ystart,marginConfig.marginright,marginConfig.xOffset||5,marginConfig.yOffset || 5];	
-	}
-	columnCount = this.calColumnCount(data);
-	rowCount = data.length;
-	width = dim[2] / columnCount;
-	height = dim[2] / rowCount;
-	dim[3] = this.calrdim(data, dim);
-};
+function initPDF(data, marginConfig, firstpage) {
 
-//draws table on the document 
+	dimensions[0] = marginConfig.xstart;
 
-jsPDFAPI.drawTable = function(table_DATA, marginConfig) {
-	fdata = [], sdata = [];
-	SplitIndex = [], cSplitIndex = [], indexHelper = 0;
-	heights = [];
-	//this.setFont("times", "normal");
-	fontSize = this.internal.getFontSize();
-	if(!marginConfig){
-		marginConfig={
-			xstart:20,
-			ystart:20,
-			tablestart:20,
-			marginright:20,
-			xOffset:10,
-			yOffset:10
-		}
-	}else{
-		propObj={
-			xstart:20,
-			ystart:20,
-			tablestart:20,
-			marginright:20,
-			xOffset:10,
-			yOffset:10
-		}
-		for(var key in propObj){
-			if(!marginConfig[key])
-			{
-			  	marginConfig[key] = propObj[key];
-			}
-		}
-	}
-	pageStart = marginConfig.tablestart;
-	xOffset=marginConfig.xOffset;
-	yOffset=marginConfig.yOffset;
-	this.initPDF(table_DATA,marginConfig,true);
-	if ((dim[3] + marginConfig.tablestart) > (this.internal.pageSize.height)) {
-		jg = 0;
-		cSplitIndex = SplitIndex;
-		cSplitIndex.push(table_DATA.length);
-		for (var ig = 0; ig < cSplitIndex.length; ig++) {
-			tabledata = [];
-			tabledata = table_DATA.slice(jg, cSplitIndex[ig]);
-			this.insertHeader(tabledata);
-			this.pdf(tabledata, dim, true, false);
-			pageStart = marginConfig.ystart;
-			this.initPDF(tabledata,marginConfig,false);
-			jg = cSplitIndex[ig];
-			if ((ig + 1) != cSplitIndex.length) {
-				this.addPage();
-			}
-		}
+	if (firstpage) {
+		dimensions[1] = marginConfig.tablestart;
 	} else {
-		this.insertHeader(table_DATA)
-		this.pdf(table_DATA, dim, true, false);
+		dimensions[1] = marginConfig.ystart;
 	}
-	return nextStart;
+
+	dimensions[2] = doc.internal.pageSize.width - marginConfig.xstart - 20 - marginConfig.marginright;
+	dimensions[3] = 250;
+	dimensions[4] = marginConfig.ystart;
+	dimensions[5] = marginConfig.marginright;
+	dimensions[6] = marginConfig.xOffset || 5;
+	dimensions[7] = marginConfig.yOffset || 5;
+
+	columnCount = calColumnCount(data);
+	rowCount = data.length;
+	width = dimensions[2] / columnCount;
+	height = dimensions[2] / rowCount;
+	dimensions[3] = calculateDim(data, dimensions);
+
 };
 
 //calls methods in a sequence manner required to draw table
 
-jsPDFAPI.pdf = function(table, rdim, hControl, bControl) {
-	columnCount = this.calColumnCount(table);
+function pdf(table, dimensions, hControl, bControl) {
+	
+	columnCount = calColumnCount(table);
 	rowCount = table.length;
-	rdim[3] = this.calrdim(table, rdim);
-	width = rdim[2] / columnCount;
-	height = rdim[2] / rowCount;
-	this.drawRows(rowCount, rdim, hControl);
-	this.drawColumns(columnCount, rdim);
-	nextStart = this.insertData(rowCount, columnCount, rdim, table, bControl);
+	dimensions[3] = calculateDim(table, dimensions);
+	width = dimensions[2] / columnCount;
+	height = dimensions[2] / rowCount;
+	drawRows(rowCount, dimensions, hControl);
+	drawColumns(columnCount, dimensions);
+	nextStart = insertData(rowCount, columnCount, dimensions, table, bControl);
 	return nextStart;
 };
 
-//inserts text into the table 
+//inserts text into the table
 
-jsPDFAPI.insertData = function(iR, jC, rdim, data, brControl) {
-	// xOffset = 10;
-	// yOffset = 10;
-	y = rdim[1] + yOffset;
-	for ( i = 0; i < iR; i++) {
+function insertData(rowCount, columnCount, dimensions, data, brControl) {
+	
+	var fontSize = doc.internal.getFontSize();
+	var xOffset = defaultConfig.xOffset;
+	var yOffset = defaultConfig.yOffset;
+	var iTexts = 0;
+	var cell = null;
+	var start = 0;
+	var end = 0;
+	var obj = {};
+
+	y = dimensions[1] + yOffset;
+
+	for (var i = 0; i < rowCount; i++) {
 		obj = data[i];
-		x = rdim[0] + xOffset;
+		x = dimensions[0] + xOffset;
 		for (var key in obj) {
-			if (key.charAt(0) !== '$') {
-				if (obj[key] !== null) {
-					cell = obj[key].toString();
-				} else {
-					cell = '-'; 
-				}
-				cell = cell + '';
+			if (obj.hasOwnProperty(key)) {
+
+				cell = (obj[key] ? obj[key] : '-') + '';
+
 				if (((cell.length * fontSize) + xOffset) > (width)) {
-					iTexts=cell.length*fontSize;
+					iTexts = cell.length * fontSize;
 					start = 0;
 					end = 0;
 					ih = 0;
 					if ((brControl) && (i === 0)) {
-						this.setFont(this.getFont().fontName, "bold");
+						doc.setFont(doc.getFont().fontName, "bold");
 					}
-					for ( j = 0; j < iTexts; j++) {
-						end+=Math.floor(2*width/fontSize)-Math.ceil(xOffset/fontSize);
-						this.text(x, y + ih, cell.substring(start, end));
+					for (var j = 0; j < iTexts; j++) {
+						end += Math.floor(2 * width / fontSize) - Math.ceil(xOffset / fontSize);
+						doc.text(x, y + ih, cell.substring(start, end));
 						start = end;
 						ih += fontSize;
 					}
 				} else {
 					if ((brControl) && (i === 0)) {
-						this.setFont("times", "bold");
+						doc.setFont("times", "bold");
 					}
-					this.text(x, y, cell);
+					doc.text(x, y, cell);
 				}
-				x += rdim[2] / jC;
+				x += dimensions[2] / columnCount;
 			}
 		}
-		this.setFont("times", "normal");
+		doc.setFont("times", "normal");
 		y += heights[i];
 	}
 	return y;
@@ -208,39 +219,52 @@ jsPDFAPI.insertData = function(iR, jC, rdim, data, brControl) {
 
 //calculates no.of based on the data array
 
-jsPDFAPI.calColumnCount = function(data) {
+function calColumnCount(data) {
+	
 	var obj = data[0];
 	var i = 0;
 	for (var key in obj) {
-		if (key.charAt(0) !== '$') {++i;
+		if (obj.hasOwnProperty(key)) {
+			i += 1;
 		}
 	}
 	return i;
 };
 
-//draws columns based on the caluclated dimensions
+//draws columns based on the caluclated dimensionsensions
 
-jsPDFAPI.drawColumns = function(i, rdim) {
-	x = rdim[0];
-	y = rdim[1];
-	w = rdim[2] / i;
-	h = rdim[3];
+function drawColumns(i, dimensions) {
+	
+	var x = dimensions[0];
+	var y = dimensions[1];
+	var w = dimensions[2] / i;
+	var h = dimensions[3];
+
 	for (var j = 0; j < i; j++) {
-		this.rect(x, y, w, h);
+		doc.rect(x, y, w, h);
 		x += w;
 	}
 };
 
-//calculates dimensions based on the data array and returns y position for further editing of document 
+//calculates dimensionsensions based on the data array and returns y position for further editing of document
 
-jsPDFAPI.calrdim = function(data, rdim) {
-	row = 0;
-	x = rdim[0];
-	y = rdim[1];
-	lengths = [];
+function calculateDim(data, dimensions) {
+	
+	var row = 0;
+	var x = dimensions[0];
+	var y = dimensions[1];
+	var fontSize = doc.internal.getFontSize();
+	var noOfLines = 0;
+	var indexHelper = 0;
+	var lengths = [];
+
+	heights = [];
+	value = 0;
+	SplitIndex = [];
+
 	for (var i = 0; i < data.length; i++) {
-		obj = data[i];
-		length = 0;
+		var obj = data[i];
+		var length = 0;
 		for (var key in obj) {
 			if (obj[key] !== null) {
 				if (length < obj[key].length) {
@@ -250,80 +274,52 @@ jsPDFAPI.calrdim = function(data, rdim) {
 			}
 		}++row;
 	}
-	heights = [];
+
 	for (var i = 0; i < lengths.length; i++) {
-		if ((lengths[i] * (fontSize)) > (width-rdim[5])) {
-			nlines = Math.ceil((lengths[i] * (fontSize)) / width);
-			heights[i] = (nlines) * (fontSize / 2) +rdim[6]+10;
+		if ((lengths[i] * (fontSize)) > (width - dimensions[5])) {
+			noOfLines = Math.ceil((lengths[i] * (fontSize)) / width);
+			heights[i] = (noOfLines) * (fontSize / 2) + dimensions[6] + 10;
 		} else {
-			heights[i] = (fontSize + (fontSize / 2))+rdim[6]+10;
+			heights[i] = (fontSize + (fontSize / 2)) + dimensions[6] + 10;
 		}
 	}
-	value = 0;
-	indexHelper = 0;
-	SplitIndex = [];
+
 	for (var i = 0; i < heights.length; i++) {
 		value += heights[i];
 		indexHelper += heights[i];
-		if (indexHelper > (this.internal.pageSize.height - pageStart)) {
+		if (indexHelper > (doc.internal.pageSize.height - pageStart)) {
 			SplitIndex.push(i);
 			indexHelper = 0;
-			pageStart = rdim[4]+30;
+			pageStart = dimensions[4] + 30;
 		}
 	}
+
 	return value;
 };
 
 //draw rows based on the length of data array
 
-jsPDFAPI.drawRows = function(i, rdim, hrControl) {
-	x = rdim[0];
-	y = rdim[1];
-	w = rdim[2];
-	h = rdim[3] / i;
+function drawRows(i, dimensions, hrControl) {
+
+	var x = dimensions[0];
+	var y = dimensions[1];
+	var w = dimensions[2];
+	var h = dimensions[3] / i;
+
 	for (var j = 0; j < i; j++) {
 		if (j === 0 && hrControl) {
-			this.setFillColor(182, 192, 192);//colour combination for table header
-			this.rect(x, y, w, heights[j], 'F');
+			doc.setFillColor(182, 192, 192);
+			//colour combination for table header
+			doc.rect(x, y, w, heights[j], 'F');
 		} else {
-			this.setDrawColor(0, 0, 0);//colour combination for table borders you
-			this.rect(x, y, w, heights[j]);
+			doc.setDrawColor(0, 0, 0);
+			//colour combination for table borders you
+			doc.rect(x, y, w, heights[j]);
 		}
 		y += heights[j];
 	}
 };
-
-//converts table to json
-
-jsPDFAPI.tableToJson=function(id){
-	var table = document.getElementById(id)
-		,keys=[]
-		,rows=table.rows
-		,noOfRows = rows.length
-		,noOfCells = table.rows[0].cells.length
-		,i=0
-		,j=0
-		,data =[]
-		,obj={}
-		;
 	
-	for(i=0;i<noOfCells;i++){
-		keys.push(rows[0].cells[i].textContent);
-	}
-	
-	for(j=0;j<noOfRows;j++){
-		obj={};
-		for(i=0;i<noOfCells;i++){
-			try{
-				obj[keys[i]]=rows[j].cells[i].textContent.replace(/^\s+|\s+$/gm,'');
-			}catch(ex){
-				obj[keys[i]]='';
-			}	
-		}
-		data.push(obj);
-	}
-	return data.splice(1);
-};
 
 }(jsPDF.API));
 
