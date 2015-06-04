@@ -87,9 +87,9 @@ jsPDFAPI.tableToJson = function(id) {
 	var obj = {};
 	var data = [];
 	var keys = [];
+	var table = document.getElementById(id);
 	var rows = table.rows;
 	var noOfRows = rows.length;
-	var table = document.getElementById(id);	
 	var noOfCells = table.rows[0].cells.length;
 
 	for ( i = 0; i < noOfCells; i++) {
