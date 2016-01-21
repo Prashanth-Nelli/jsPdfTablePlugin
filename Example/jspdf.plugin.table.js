@@ -1,6 +1,6 @@
 /** ====================================================================
  * jsPDF table plugin
- * Copyright (c) 2014 Nelli.Prashanth,https://github.com/Prashanth-Nelli
+ * Copyright (c) 2016 Nelli.Prashanth,https://github.com/Prashanth-Nelli
  * MIT LICENSE
  * ====================================================================
  */
@@ -27,7 +27,12 @@ var defaultConfig = {
 	tablestart : 20,
 	marginright : 20,
 	xOffset : 10,
-	yOffset : 10
+	yOffset : 10,
+	marginbottom:50,//extra margin bottom to correct page overflows with big amount of data.
+	paginationX: 10,//Coordinate X for pagination
+	paginationY: 10,//Coordinate Y for pagination
+	page:1,//count for pages (maybe move this to other position)
+	columnWidths:null//array for customizing the columns widths. Example: columnWidths:[20,100,100]. all columns in table should be defined
 };
 
 //draws table on the document
@@ -49,9 +54,9 @@ jsPDFAPI.drawTable = function(table_DATA,config) {
 	}
 
 	doc = this;
-	
+
 	pageStart = defaultConfig.tablestart;
-	
+
 
 	initPDF(table_DATA, defaultConfig, true);
 
@@ -113,7 +118,7 @@ jsPDFAPI.tableToJson = function(id) {
 // Inserts Table Head row
 
 function insertHeader(data) {
-	
+
 	var rObj = {};
 	var hObj = {};
 	rObj = data[0];
@@ -136,6 +141,7 @@ function initPDF(data, marginConfig, firstpage) {
 	}
 
 	dimensions[2] = doc.internal.pageSize.width - marginConfig.xstart - 20 - marginConfig.marginright;
+
 	dimensions[3] = 250;
 	dimensions[4] = marginConfig.ystart;
 	dimensions[5] = marginConfig.marginright;
@@ -148,12 +154,23 @@ function initPDF(data, marginConfig, firstpage) {
 	height = dimensions[2] / rowCount;
 	dimensions[3] = calculateDim(data, dimensions);
 
+	//if customized colums widths are set, sum all new widths
+	if(defaultConfig.columnWidths != null){
+		sum = 0;
+		for(count = 0;count< columnCount ;count++){
+			sum+=defaultConfig.columnWidths[count];
+		}
+
+		dimensions[2] = sum;
+	}
+
+
 };
 
 //calls methods in a sequence manner required to draw table
 
 function pdf(table, dimensions, hControl, bControl) {
-	
+
 	columnCount = calColumnCount(table);
 	rowCount = table.length;
 	dimensions[3] = calculateDim(table, dimensions);
@@ -168,7 +185,7 @@ function pdf(table, dimensions, hControl, bControl) {
 //inserts text into the table
 
 function insertData(rowCount, columnCount, dimensions, data, brControl) {
-	
+
 	var fontSize = doc.internal.getFontSize();
 	var xOffset = defaultConfig.xOffset;
 	var yOffset = defaultConfig.yOffset;
@@ -183,32 +200,62 @@ function insertData(rowCount, columnCount, dimensions, data, brControl) {
 	for (var i = 0; i < rowCount; i++) {
 		obj = data[i];
 		x = dimensions[0] + xOffset;
+
+		//index for columnWidths
+		var i_col = 0;
+
 		for (var key in obj) {
 			if (obj.hasOwnProperty(key)) {
 
 				cell = (obj[key] ? obj[key] : '-') + '';
+				//new case for customized columnWidths.
+				if( defaultConfig.columnWidths != null){
+					if (((cell.length * fontSize) + xOffset) > (defaultConfig.columnWidths[i_col])) {
+						iTexts = cell.length * fontSize;
+						start = 0;
+						end = 0;
+						ih = 0;
+						if ((brControl) && (i === 0)) {
+							doc.setFont(doc.getFont().fontName, "bold");
+						}
+						for (var j = 0; j < iTexts; j++) {
+							end += Math.floor(2 * defaultConfig.columnWidths[i_col] / fontSize) - Math.ceil(xOffset / fontSize);
+							doc.text(x, y + ih, cell.substring(start, end));
+							start = end;
+							ih += fontSize;
+						}
+					} else {
+						if ((brControl) && (i === 0)) {
+							doc.setFont("times", "bold");
+						}
+						doc.text(x, y, cell);
+					}
+					x += defaultConfig.columnWidths[i_col];
+					i_col++;
+				}else{
+					if (((cell.length * fontSize) + xOffset) > (width)) {
+						iTexts = cell.length * fontSize;
+						start = 0;
+						end = 0;
+						ih = 0;
+						if ((brControl) && (i === 0)) {
+							doc.setFont(doc.getFont().fontName, "bold");
+						}
+						for (var j = 0; j < iTexts; j++) {
+							end += Math.floor(2 * width / fontSize) - Math.ceil(xOffset / fontSize);
+							doc.text(x, y + ih, cell.substring(start, end));
+							start = end;
+							ih += fontSize;
+						}
+					} else {
+						if ((brControl) && (i === 0)) {
+							doc.setFont("times", "bold");
+						}
+						doc.text(x, y, cell);
+					}
+					x += dimensions[2] / columnCount;
 
-				if (((cell.length * fontSize) + xOffset) > (width)) {
-					iTexts = cell.length * fontSize;
-					start = 0;
-					end = 0;
-					ih = 0;
-					if ((brControl) && (i === 0)) {
-						doc.setFont(doc.getFont().fontName, "bold");
-					}
-					for (var j = 0; j < iTexts; j++) {
-						end += Math.floor(2 * width / fontSize) - Math.ceil(xOffset / fontSize);
-						doc.text(x, y + ih, cell.substring(start, end));
-						start = end;
-						ih += fontSize;
-					}
-				} else {
-					if ((brControl) && (i === 0)) {
-						doc.setFont("times", "bold");
-					}
-					doc.text(x, y, cell);
 				}
-				x += dimensions[2] / columnCount;
 			}
 		}
 		doc.setFont("times", "normal");
@@ -220,7 +267,7 @@ function insertData(rowCount, columnCount, dimensions, data, brControl) {
 //calculates no.of based on the data array
 
 function calColumnCount(data) {
-	
+
 	var obj = data[0];
 	var i = 0;
 	for (var key in obj) {
@@ -234,13 +281,18 @@ function calColumnCount(data) {
 //draws columns based on the caluclated dimensionsensions
 
 function drawColumns(i, dimensions) {
-	
+
 	var x = dimensions[0];
 	var y = dimensions[1];
 	var w = dimensions[2] / i;
 	var h = dimensions[3];
 
 	for (var j = 0; j < i; j++) {
+		//if defined customized columnWidths
+		if(defaultConfig.columnWidths != null){
+			w= defaultConfig.columnWidths[j];
+		}
+
 		doc.rect(x, y, w, h);
 		x += w;
 	}
@@ -249,7 +301,7 @@ function drawColumns(i, dimensions) {
 //calculates dimensionsensions based on the data array and returns y position for further editing of document
 
 function calculateDim(data, dimensions) {
-	
+
 	var row = 0;
 	var x = dimensions[0];
 	var y = dimensions[1];
@@ -287,7 +339,8 @@ function calculateDim(data, dimensions) {
 	for (var i = 0; i < heights.length; i++) {
 		value += heights[i];
 		indexHelper += heights[i];
-		if (indexHelper > (doc.internal.pageSize.height - pageStart)) {
+
+		if (indexHelper > (doc.internal.pageSize.height-defaultConfig.marginbottom - pageStart)) {
 			SplitIndex.push(i);
 			indexHelper = 0;
 			pageStart = dimensions[4] + 30;
@@ -319,7 +372,6 @@ function drawRows(i, dimensions, hrControl) {
 		y += heights[j];
 	}
 };
-	
+
 
 }(jsPDF.API));
-
